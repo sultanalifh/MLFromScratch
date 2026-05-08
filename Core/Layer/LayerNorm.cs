@@ -1,4 +1,6 @@
 
+using System.Diagnostics.CodeAnalysis;
+
 class LayerNorm : Layer
 {
     private double _Epsilon = 1e-5;
@@ -8,10 +10,13 @@ class LayerNorm : Layer
     public double BetaGrad = 0;
     public Matrix CachedInput;
     public Matrix CachedOutput;
+
     public LayerNorm(int inputSize, int outputSize) : base(inputSize, outputSize)
     {
         InputSize = inputSize;
         OutputSize = outputSize;
+        CachedInput = new Matrix(outputSize, inputSize);
+        CachedOutput = new Matrix(outputSize, inputSize);
     }
     public override Matrix Forward(Matrix x)
     {
