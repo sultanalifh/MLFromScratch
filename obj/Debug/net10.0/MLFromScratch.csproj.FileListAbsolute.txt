@@ -12,3 +12,4 @@ C:\Users\sulta\MLFromScratch\bin\Debug\net10.0\MLFromScratch.dll
 C:\Users\sulta\MLFromScratch\bin\Debug\net10.0\MLFromScratch.pdb
 C:\Users\sulta\MLFromScratch\obj\Debug\net10.0\MLFromScratch.genruntimeconfig.cache
 C:\Users\sulta\MLFromScratch\obj\Debug\net10.0\ref\MLFromScratch.dll
+C:\Users\sulta\MLFromScratch\obj\Debug\net10.0\MLFromScratch.sourcelink.json

@@ -5,47 +5,55 @@ class ML {
 
     static void Main()
     {
-        NeuralNetwork model = new NeuralNetwork(5,2);
+        Sequential sequential = new Sequential();
 
-        List<DataSet> dataSets = new List<DataSet>();
+        DenseLayer denseLayer = new DenseLayer(2,7);
 
-        Vector data1 = new Vector(2);
-        data1[0] = data1[1] = 0;
-        DataSet ds1 = new DataSet(data1, 0);
-
-        Vector data2 = new Vector(2);
-        data2[0] = 0; data2[1] = 1;
-        DataSet ds2 = new DataSet(data2, 1);
-
-        Vector data3 = new Vector(2);
-        data3[0] = 1; data3[1] = 0;
-        DataSet ds3 = new DataSet(data3, 1);
-
-        Vector data4 = new Vector(2);
-        data4[0] = 1; data4[1] = 1;
-        DataSet ds4 = new DataSet(data4, 0);
-
-        dataSets.Add(ds1);
-        dataSets.Add(ds2);
-        dataSets.Add(ds3);
-        dataSets.Add(ds4);
-
-        int BatchSize = 2;
-        int epochs = 100000;
-
-        for(int epoch = 0; epoch < epochs; epoch++)
+        for(int i = 0; i < 5; i++)
         {
-            dataSets = dataSets.OrderBy(_ => Utility.Random.Next()).ToList();
-
-            for(int i = 0; i < dataSets.Count; i += BatchSize)
+            for(int j = 0; j < 2; j++)
             {
-                List<DataSet> Batch = dataSets.Skip(i).Take(BatchSize).ToList();
-                model.TrainBatchSigmoid(Batch);
+                double u1 = Utility.Random.NextDouble();
+                double u2 = Utility.Random.NextDouble();
+                double z = Math.Sqrt(-2*Math.Log(u1)) * Math.Cos(2*Math.PI*u2);
+                denseLayer.Weights[i,j] = z;
             }
         }
 
-        model.ShowDebug = true;
+        sequential.Add(denseLayer);
 
-        model.TrainBatchSigmoid(dataSets);
+        LayerNorm batchNormLayer = new LayerNorm(7,7);
+
+        sequential.Add(batchNormLayer);
+
+        ReLULayer reLULayer = new ReLULayer(1,1);
+    
+        sequential.Add(reLULayer);
+
+        denseLayer = new DenseLayer(7,1);
+
+        sequential.Add(denseLayer);
+
+        SigmoidLayer sigmoid = new SigmoidLayer(1,1);
+
+        sequential.Add(sigmoid);
+
+        Matrix Testcase = new Matrix(4,2);
+        Testcase[1,0] = 1;
+        Testcase[2,1] = 1;
+        Testcase[3,0] = Testcase[3,1] = 1;
+
+        Matrix Ans = new Matrix(4,1);
+        Ans[1,0] = Ans[2,0] = 1;
+
+        for(int i = 0; i < 100000; i++)
+        {
+            sequential.Backward(sequential.Forward(Testcase), Ans);
+            sequential.LearnGradient(0.01);
+        }
+
+        Matrix pred = sequential.Predict(Testcase);
+
+        for(int i=0;i<4;i++) Console.WriteLine(pred[i,0]);
     }
 }

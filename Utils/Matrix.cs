@@ -40,9 +40,10 @@ class Matrix
 
         for(int i = 0; i < Rows; i++)
         {
-            double sum = 0; 
             for(int j = 0; j < other.Cols; j++)
             {
+                double sum = 0; 
+
                 for(int k = 0; k < Cols; k++)
                 {
                     sum += this[i,k] * other[k,j];
@@ -67,6 +68,23 @@ class Matrix
         }
 
         return Result;
+    }
+
+    public double RowSum(int row)
+    {
+        if(row < 0 || row >= Rows)
+        {
+            throw new ArgumentOutOfRangeException("Index row out of bound!");
+        }
+
+        double Sum = 0;
+
+        for(int i = 0; i < Cols; i++)
+        {
+            Sum += this[row,i];
+        }
+
+        return Sum;
     }
 
     public Matrix Clone()
