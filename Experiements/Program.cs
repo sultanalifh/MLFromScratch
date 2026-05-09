@@ -26,7 +26,7 @@ class ML {
 
         sequential.Add(batchNormLayer);
 
-        ReLULayer reLULayer = new ReLULayer(1,1);
+        ReLULayer reLULayer = new ReLULayer(7,7);
     
         sequential.Add(reLULayer);
 

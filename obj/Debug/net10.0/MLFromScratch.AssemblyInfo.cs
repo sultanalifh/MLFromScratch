@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MLFromScratch")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75b202fa9858ee6eeca6736db76ff80a7a4a7ef2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fa6870e79ec684d24c921d2232fa1fe5bacfb542")]
 [assembly: System.Reflection.AssemblyProductAttribute("MLFromScratch")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MLFromScratch")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
