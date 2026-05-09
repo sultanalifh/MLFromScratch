@@ -4,10 +4,10 @@ using System.Diagnostics.CodeAnalysis;
 class LayerNorm : Layer
 {
     private double _Epsilon = 1e-5;
-    public double Gamma = 1;
-    public double GammaGrad = 0;
-    public double Beta = 0;
-    public double BetaGrad = 0;
+    public double[] Gamma;
+    public double[] GammaGrad;
+    public double[] Beta;
+    public double[] BetaGrad;
     public Matrix CachedInput;
     public Matrix CachedOutput;
 
@@ -15,6 +15,14 @@ class LayerNorm : Layer
     {
         InputSize = inputSize;
         OutputSize = outputSize;
+
+        Gamma = new double[inputSize];
+        GammaGrad = new double[inputSize];
+        Beta = new double[inputSize];
+        BetaGrad = new double[inputSize];
+
+        Array.Fill(Gamma, 1);
+
         CachedInput = new Matrix(outputSize, inputSize);
         CachedOutput = new Matrix(outputSize, inputSize);
     }
@@ -23,6 +31,8 @@ class LayerNorm : Layer
         CachedInput = x.Clone();
 
         int BatchSize = x.Rows;
+
+        Matrix output = new Matrix(BatchSize, OutputSize);
 
         for(int i = 0; i < BatchSize; i++)
         {
@@ -43,31 +53,21 @@ class LayerNorm : Layer
             {
                 double x_norm = (x[i,j] - Mean) / std;
 
-                double x_normalized = Gamma * x_norm + Beta;
+                double x_normalized = Gamma[j] * x_norm + Beta[j];
 
-                x[i,j] = x_normalized;
+                output[i,j] = x_normalized;
             }
         }
 
-        CachedOutput = x.Clone();
+        CachedOutput = output.Clone();
 
-        return x;
+        return output;
     }
     public override Matrix Backward(Matrix x)
     {
-
-        // dyi/dxi from xnorm: Gamma / std
-        // dyi/dxi from mean: dyi/dxnorm * dxnorm/du * du/dxi
-        // = Sum(dyi/dxnorm) * -1/std * 1/n
-        // = -mean(dyi/dxnorm)/std
-        // dyi/dxi from variance: dyi/dxnorm * dxnorm/dstd * dstd/do^2 * do^2/dxi
-        // = -1/std * Sum(dyi * Gamma * xhat) * 1/2std * 2(xi - u)/n
-        // = -1/std * mean(dyi * Gamma * xhat) * xhat
-        // = -xhat * mean(dyi * Gamma * xhat) / std
-        
-        // total = Gamma * 1/std - mean(dyi * Gamma)/std - xhat_i * mean(dyi * Gamma * xhat OR dxHatxhat)/std
-
         int BatchSize = x.Rows;
+
+        Matrix gradInput = new Matrix(BatchSize, InputSize);
 
         for(int i = 0; i < BatchSize; i++)
         {
@@ -91,14 +91,14 @@ class LayerNorm : Layer
             for(int j = 0; j < InputSize; j++)
             {
                 double x_norm = (CachedInput[i,j] - mean) / std;
-                double dyi_dxnorm = x[i,j] * Gamma;
+                double dyi_dxnorm = x[i,j] * Gamma[j];
                 gradXhat[j] = dyi_dxnorm;
                 xhat[j] = x_norm;
                 dXhat += dyi_dxnorm;
                 dXhatXhat += dyi_dxnorm * x_norm;
 
-                GammaGrad += x[i,j] * x_norm;
-                BetaGrad += x[i,j];
+                GammaGrad[j] += x[i,j] * x_norm;
+                BetaGrad[j] += x[i,j];
             }
 
             dXhat /= InputSize;
@@ -106,17 +106,20 @@ class LayerNorm : Layer
 
             for(int j = 0; j < InputSize; j++)
             {
-                x[i,j] = (gradXhat[j] - dXhat - xhat[j] * dXhatXhat) / std;
+                gradInput[i,j] = (gradXhat[j] - dXhat - xhat[j] * dXhatXhat) / std;
             }
         }
 
-        return x;
+        return gradInput;
     }
     public override void LearnGradient(double learningRate)
     {
-        Gamma -= GammaGrad * learningRate;
-        Beta -= BetaGrad * learningRate;
+        for(int i = 0; i < InputSize; i++)
+        {
+            Gamma[i] -= GammaGrad[i] * learningRate;
+            Beta[i] -= BetaGrad[i] * learningRate;
 
-        GammaGrad = BetaGrad = 0;
+            GammaGrad[i] = BetaGrad[i] = 0;
+        }
     }
 }
