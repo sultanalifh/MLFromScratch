@@ -1,8 +1,8 @@
 class DenseLayer : Layer
 {
     // Parameters
-    public Matrix Weights;
-    public Matrix Bias; 
+    public Parameter Weights;
+    public Parameter Bias; 
 
     // Gradient cache
     public Matrix GradWeights;
@@ -14,8 +14,8 @@ class DenseLayer : Layer
 
     public DenseLayer(int inputSize, int outputSize) : base(inputSize, outputSize)
     {
-        Weights = new Matrix(outputSize, inputSize);
-        Bias = new Matrix(outputSize, 1);
+        Weights = new Parameter(outputSize, inputSize);
+        Bias = new Parameter(outputSize, 1);
 
         GradWeights = new Matrix(outputSize, inputSize);
         GradBias = new Matrix(outputSize, 1);
@@ -24,12 +24,12 @@ class DenseLayer : Layer
     public override Matrix Forward(Matrix x)
     {
         CachedInput = x.Clone();
-        x = x.Dot(Weights.Transpose());
+        x = x.Dot(Weights.Data.Transpose());
         for(int i = 0; i < x.Rows; i++)
         {
             for(int j = 0; j < OutputSize; j++)
             {
-                x[i,j] += Bias[j,0];
+                x[i,j] += Bias.Data[j,0];
             }
         }
         CachedOutput = x.Clone();
@@ -43,7 +43,7 @@ class DenseLayer : Layer
             throw new ArgumentException("Backward gradient output size was not the same!");
         }
 
-        Matrix backGrad = new Matrix(x.Rows, InputSize);
+        Matrix gradInput = new Matrix(x.Rows, InputSize);
 
         for(int i = 0; i < x.Rows; i++)
         {
@@ -52,28 +52,34 @@ class DenseLayer : Layer
                 double w_grad = x[i,j];
                 for(int k = 0; k < InputSize; k++)
                 {
-                    GradWeights[j,k] += w_grad * CachedInput[i,k];
-                    backGrad[i,k] += w_grad * Weights[j,k];
+                    Weights.Grad[j,k] += w_grad * CachedInput[i,k];
+                    gradInput[i,k] += w_grad * Weights.Data[j,k];
                 }
-                GradBias[j,0] += w_grad;
+                Bias.Grad[j,0] += w_grad;
             }
         }
-
-        return backGrad;
+        
+        return gradInput;
     }
 
-    public override void LearnGradient(double learningRate)
+    public override void Step(double learningRate)
     {
         for(int i = 0; i < OutputSize; i++)
         {
             for(int j = 0; j < InputSize; j++)
             {
-                Weights[i,j] -= GradWeights[i,j] * learningRate;
-                GradWeights[i,j] = 0;
+                Weights.Data[i,j] -= Weights.Grad[i,j] * learningRate;
+                Weights.Grad[i,j] = 0;
             }
             
-            Bias[i,0] -= GradBias[i,0] * learningRate;
-            GradBias[i,0] = 0;
+            Bias.Data[i,0] -= Bias.Grad[i,0] * learningRate;
+            Bias.Grad[i,0] = 0;
         }
+    }
+
+    public override IEnumerable<Parameter> Parameters()
+    {
+        yield return Weights;
+        yield return Bias;
     }
 }

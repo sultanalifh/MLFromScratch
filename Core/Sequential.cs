@@ -24,7 +24,7 @@ class Sequential
 
     public Matrix Backward(Matrix yPred, Matrix yTrue)
     {
-        yPred = Loss.BinaryCrossEntropy(yPred, yTrue);
+        yPred = Loss.BinaryCrossEntropyGrad(yPred, yTrue);
 
         for(int i = Layers.Count - 1; i >= 0; i--)
         {
@@ -38,7 +38,7 @@ class Sequential
     {
         for(int i = 0; i < Layers.Count; i++)
         {
-            Layers[i].LearnGradient(learningRate);
+            Layers[i].Step(learningRate);
         }
     }
 

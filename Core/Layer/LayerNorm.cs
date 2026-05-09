@@ -4,10 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 class LayerNorm : Layer
 {
     private double _Epsilon = 1e-5;
-    public double[] Gamma;
-    public double[] GammaGrad;
-    public double[] Beta;
-    public double[] BetaGrad;
+    public Parameter Gamma;
+    public Parameter Beta;
     public Matrix CachedInput;
     public Matrix CachedOutput;
 
@@ -16,12 +14,13 @@ class LayerNorm : Layer
         InputSize = inputSize;
         OutputSize = outputSize;
 
-        Gamma = new double[inputSize];
-        GammaGrad = new double[inputSize];
-        Beta = new double[inputSize];
-        BetaGrad = new double[inputSize];
+        Gamma = new Parameter(1, inputSize);
+        Beta = new Parameter(1, inputSize);
 
-        Array.Fill(Gamma, 1);
+        for(int i = 0; i < InputSize; i++)
+        {
+            Gamma.Data[0,i] = 1;
+        }
 
         CachedInput = new Matrix(outputSize, inputSize);
         CachedOutput = new Matrix(outputSize, inputSize);
@@ -53,7 +52,7 @@ class LayerNorm : Layer
             {
                 double x_norm = (x[i,j] - Mean) / std;
 
-                double x_normalized = Gamma[j] * x_norm + Beta[j];
+                double x_normalized = Gamma.Data[0,j] * x_norm + Beta.Data[0,j];
 
                 output[i,j] = x_normalized;
             }
@@ -91,14 +90,14 @@ class LayerNorm : Layer
             for(int j = 0; j < InputSize; j++)
             {
                 double x_norm = (CachedInput[i,j] - mean) / std;
-                double dyi_dxnorm = x[i,j] * Gamma[j];
+                double dyi_dxnorm = x[i,j] * Gamma.Data[0,j];
                 gradXhat[j] = dyi_dxnorm;
                 xhat[j] = x_norm;
                 dXhat += dyi_dxnorm;
                 dXhatXhat += dyi_dxnorm * x_norm;
 
-                GammaGrad[j] += x[i,j] * x_norm;
-                BetaGrad[j] += x[i,j];
+                Gamma.Grad[0,j] += x[i,j] * x_norm;
+                Beta.Grad[0,j] += x[i,j];
             }
 
             dXhat /= InputSize;
@@ -112,14 +111,20 @@ class LayerNorm : Layer
 
         return gradInput;
     }
-    public override void LearnGradient(double learningRate)
+    public override void Step(double learningRate)
     {
         for(int i = 0; i < InputSize; i++)
         {
-            Gamma[i] -= GammaGrad[i] * learningRate;
-            Beta[i] -= BetaGrad[i] * learningRate;
+            Gamma.Data[0,i] -= Gamma.Grad[0,i] * learningRate;
+            Gamma.Data[0,i] -= Beta.Grad[0,i] * learningRate;
 
-            GammaGrad[i] = BetaGrad[i] = 0;
+            Gamma.Grad[0,i] = Beta.Grad[0,i] = 0;
         }
+    }
+
+    public override IEnumerable<Parameter> Parameters()
+    {
+        yield return Gamma;
+        yield return Beta;
     }
 }

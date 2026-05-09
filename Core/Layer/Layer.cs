@@ -13,5 +13,7 @@ abstract class Layer
 
     public abstract Matrix Backward(Matrix x);
 
-    public abstract void LearnGradient(double learningRate);
+    public abstract void Step(double learningRate);
+
+    public abstract IEnumerable<Parameter> Parameters();
 }

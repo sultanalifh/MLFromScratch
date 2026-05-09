@@ -25,21 +25,26 @@ class ReLULayer : Layer
 
     public override Matrix Backward(Matrix x)
     {
-        Matrix backGrad = new Matrix(x.Rows, x.Cols);
+        Matrix gradInput = new Matrix(x.Rows, x.Cols);
 
         for(int i = 0; i < x.Rows; i++)
         {
             for(int j = 0; j < x.Cols; j++)
             {
-                backGrad[i,j] = CachedInput[i,j] > 0 ? x[i,j] : 0;
+                gradInput[i,j] = CachedInput[i,j] > 0 ? x[i,j] : 0;
             }
         }
 
-        return backGrad;
+        return gradInput;
     }
 
-    public override void LearnGradient(double learningRate)
+    public override void Step(double learningRate)
     {
         return;
+    }
+
+    public override IEnumerable<Parameter> Parameters()
+    {
+        yield break;
     }
 }

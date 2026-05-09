@@ -36,8 +36,13 @@ class SigmoidLayer : Layer
         return x;
     }
 
-    public override void LearnGradient(double learningRate)
+    public override void Step(double learningRate)
     {
         return;
+    }
+
+    public override IEnumerable<Parameter> Parameters()
+    {
+        yield break;
     }
 }

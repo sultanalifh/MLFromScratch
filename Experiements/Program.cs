@@ -16,7 +16,7 @@ class ML {
                 double u1 = Utility.Random.NextDouble();
                 double u2 = Utility.Random.NextDouble();
                 double z = Math.Sqrt(-2*Math.Log(u1)) * Math.Cos(2*Math.PI*u2);
-                denseLayer.Weights[i,j] = z;
+                denseLayer.Weights.Data[i,j] = z;
             }
         }
 
@@ -46,14 +46,17 @@ class ML {
         Matrix Ans = new Matrix(4,1);
         Ans[1,0] = Ans[2,0] = 1;
 
-        for(int i = 0; i < 100000; i++)
+        for(int i = 0; i < 10000; i++)
         {
             sequential.Backward(sequential.Forward(Testcase), Ans);
             sequential.LearnGradient(0.01);
         }
 
-        Matrix pred = sequential.Predict(Testcase);
+        Matrix Pred = sequential.Predict(Testcase);
 
-        for(int i=0;i<4;i++) Console.WriteLine(pred[i,0]);
+        for(int i = 0; i < 4; i++)
+        {
+            Console.WriteLine(Pred[i,0]);
+        }
     }
 }
