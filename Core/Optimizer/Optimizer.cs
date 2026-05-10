@@ -8,12 +8,9 @@ abstract class Optimizer
     {
         Parameters = new List<Parameter>();
 
-        foreach(Layer layer in sequential.Layers)
+        foreach(Parameter param in sequential.Parameters())
         {
-            foreach(Parameter parameter in layer.Parameters())
-            {
-                Parameters.Add(parameter);
-            }
+            Parameters.Add(param);
         }
 
         LearningRate = learningRate;

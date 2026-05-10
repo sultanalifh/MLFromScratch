@@ -39,8 +39,8 @@ class ML {
         sequential.Add(sigmoid);
 
         // Momentum optimizer = new Momentum(sequential, 0.01, 0.9);
-        SGD optimizer = new SGD(sequential, 0.01);
-        // Adam optimizer = new Adam(sequential, 0.01);
+        // SGD optimizer = new SGD(sequential, 0.01);
+        Adam optimizer = new Adam(sequential, 0.01);
 
         Matrix Testcase = new Matrix(4,2);
         Testcase[1,0] = 1;

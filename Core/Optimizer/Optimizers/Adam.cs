@@ -53,7 +53,7 @@ class Adam : Optimizer
                     double vHat = velocity[j,k] / (1 - TBeta1);
                     double varHat = variance[j,k] / (1 - TBeta2);
                     
-                    parameter.Data[j,k] -= LearningRate * velocity[j,k] / (Math.Sqrt(variance[j,k]) + Utility.e5Eps);
+                    parameter.Data[j,k] -= LearningRate * vHat / (Math.Sqrt(varHat) + Utility.e5Eps);
 
                     TBeta1 *= TBeta1;
                     TBeta2 *= TBeta2;

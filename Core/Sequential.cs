@@ -31,4 +31,15 @@ class Sequential
 
         return x;
     }
+
+    public IEnumerable<Parameter> Parameters()
+    {
+        foreach(Layer layer in Layers)
+        {
+            foreach(Parameter param in layer.Parameters())
+            {
+                yield return param;
+            }
+        }
+    }
 }
