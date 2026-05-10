@@ -38,6 +38,10 @@ class ML {
 
         sequential.Add(sigmoid);
 
+        // Momentum optimizer = new Momentum(sequential, 0.01, 0.9);
+        SGD optimizer = new SGD(sequential, 0.01);
+        // Adam optimizer = new Adam(sequential, 0.01);
+
         Matrix Testcase = new Matrix(4,2);
         Testcase[1,0] = 1;
         Testcase[2,1] = 1;
@@ -46,17 +50,21 @@ class ML {
         Matrix Ans = new Matrix(4,1);
         Ans[1,0] = Ans[2,0] = 1;
 
-        for(int i = 0; i < 10000; i++)
+        for(int i = 0; i < 50; i++)
         {
-            sequential.Backward(sequential.Forward(Testcase), Ans);
-            sequential.LearnGradient(0.01);
+            optimizer.ZeroGrad();
+            Matrix pred = sequential.Predict(Testcase);
+            double loss = Loss.BinaryCrossEntropyValue(pred, Ans);
+            Console.WriteLine("Loss: " + loss);
+            sequential.Backward(pred, Ans);
+            optimizer.Step();
         }
 
-        Matrix Pred = sequential.Predict(Testcase);
+        // Matrix Pred = sequential.Predict(Testcase);
 
-        for(int i = 0; i < 4; i++)
-        {
-            Console.WriteLine(Pred[i,0]);
-        }
+        // for(int i = 0; i < 4; i++)
+        // {
+        //     Console.WriteLine(Pred[i,0]);
+        // }
     }
 }

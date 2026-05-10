@@ -4,21 +4,17 @@ class DenseLayer : Layer
     public Parameter Weights;
     public Parameter Bias; 
 
-    // Gradient cache
-    public Matrix GradWeights;
-    public Matrix GradBias;
-
     // Forward cache
     public Matrix CachedInput;
     public Matrix CachedOutput;
 
     public DenseLayer(int inputSize, int outputSize) : base(inputSize, outputSize)
     {
+        InputSize = inputSize;
+        OutputSize = outputSize;
+        
         Weights = new Parameter(outputSize, inputSize);
         Bias = new Parameter(outputSize, 1);
-
-        GradWeights = new Matrix(outputSize, inputSize);
-        GradBias = new Matrix(outputSize, 1);
     }
 
     public override Matrix Forward(Matrix x)

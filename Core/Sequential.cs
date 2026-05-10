@@ -11,17 +11,6 @@ class Sequential
     {
         Layers.Add(layer);
     }
-
-    public Matrix Forward(Matrix x)
-    {
-        for(int i = 0; i < Layers.Count; i++)
-        {
-            x = Layers[i].Forward(x);
-        }
-
-        return x;
-    }
-
     public Matrix Backward(Matrix yPred, Matrix yTrue)
     {
         yPred = Loss.BinaryCrossEntropyGrad(yPred, yTrue);
@@ -33,15 +22,6 @@ class Sequential
 
         return yPred;
     }
-
-    public void LearnGradient(double learningRate)
-    {
-        for(int i = 0; i < Layers.Count; i++)
-        {
-            Layers[i].Step(learningRate);
-        }
-    }
-
     public Matrix Predict(Matrix x)
     {
         for(int i = 0; i < Layers.Count; i++)
