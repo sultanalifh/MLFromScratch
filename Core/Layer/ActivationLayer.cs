@@ -1,11 +1,7 @@
 abstract class ActivationLayer : Layer
 {
-    public Matrix CachedInput;
-    public Matrix CachedOutput;
     public ActivationLayer(int inputSize, int outputSize) : base(inputSize, outputSize)
     {
-        InputSize = inputSize;
-        OutputSize = outputSize;
     }
 
     public override Matrix Backward(Matrix x) => Derivative(x);

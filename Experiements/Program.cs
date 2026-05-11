@@ -7,64 +7,75 @@ class ML {
     {
         Sequential sequential = new Sequential();
 
-        DenseLayer denseLayer = new DenseLayer(2,7);
+        DenseLayer denseLayer = new DenseLayer(2,32);
 
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < denseLayer.Weights.Data.Rows; i++)
         {
-            for(int j = 0; j < 2; j++)
+            for(int j = 0; j < denseLayer.Weights.Data.Cols; j++)
             {
                 double u1 = Utility.Random.NextDouble();
                 double u2 = Utility.Random.NextDouble();
-                double z = Math.Sqrt(-2*Math.Log(u1)) * Math.Cos(2*Math.PI*u2);
-                denseLayer.Weights.Data[i,j] = z;
+                double z = Utility.RandomNormal();
+                denseLayer.Weights.Data[i,j] = z * Math.Sqrt(2d / denseLayer.Weights.Data.Cols);
             }
         }
 
         sequential.Add(denseLayer);
 
-        LayerNorm batchNormLayer = new LayerNorm(7,7);
+        LayerNorm batchNormLayer = new LayerNorm(32,32);
 
         sequential.Add(batchNormLayer);
 
-        ReLULayer reLULayer = new ReLULayer(7,7);
+        ReLU reLULayer = new ReLU(32,32);
     
         sequential.Add(reLULayer);
 
-        denseLayer = new DenseLayer(7,1);
+        denseLayer = new DenseLayer(32,32);
 
         sequential.Add(denseLayer);
 
-        SigmoidLayer sigmoid = new SigmoidLayer(1,1);
+        for(int i = 0; i < denseLayer.Weights.Data.Rows; i++)
+        {
+            for(int j = 0; j < denseLayer.Weights.Data.Cols; j++)
+            {
+                double u1 = Utility.Random.NextDouble();
+                double u2 = Utility.Random.NextDouble();
+                double z = Utility.RandomNormal();
+                denseLayer.Weights.Data[i,j] = z * Math.Sqrt(2d / denseLayer.Weights.Data.Cols);
+            }
+        }
 
-        sequential.Add(sigmoid);
+        batchNormLayer = new LayerNorm(32,32);
+
+        sequential.Add(batchNormLayer);
+
+        reLULayer = new ReLU(32,32);
+    
+        sequential.Add(reLULayer);
+
+        denseLayer = new DenseLayer(32,3);
+
+        sequential.Add(denseLayer);
+
+        Softmax softmax = new Softmax(3,3);
+
+        sequential.Add(softmax);
 
         // Momentum optimizer = new Momentum(sequential, 0.01, 0.9);
         // SGD optimizer = new SGD(sequential, 0.01);
         Adam optimizer = new Adam(sequential, 0.01);
 
-        Matrix Testcase = new Matrix(4,2);
-        Testcase[1,0] = 1;
-        Testcase[2,1] = 1;
-        Testcase[3,0] = Testcase[3,1] = 1;
+        SpiralDataset dataset = new SpiralDataset(3, 100);
+        dataset.Generate();
 
-        Matrix Ans = new Matrix(4,1);
-        Ans[1,0] = Ans[2,0] = 1;
-
-        for(int i = 0; i < 50; i++)
+        for(int i = 0; i < 300; i++)
         {
             optimizer.ZeroGrad();
-            Matrix pred = sequential.Predict(Testcase);
-            double loss = Loss.BinaryCrossEntropyValue(pred, Ans);
-            Console.WriteLine("Loss: " + loss);
-            sequential.Backward(pred, Ans);
+            Matrix pred = sequential.Predict(dataset.X);
+            sequential.Backward(pred, dataset.Y);
             optimizer.Step();
         }
 
-        // Matrix Pred = sequential.Predict(Testcase);
-
-        // for(int i = 0; i < 4; i++)
-        // {
-        //     Console.WriteLine(Pred[i,0]);
-        // }
+        TrainingMonitor.CheckNumericalGrad(sequential, dataset.X, dataset.Y, 0);
     }
 }

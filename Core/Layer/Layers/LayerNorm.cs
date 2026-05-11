@@ -6,16 +6,10 @@ class LayerNorm : Layer
     private double _Epsilon = 1e-5;
     public Parameter Gamma;
     public Parameter Beta;
-    public Matrix CachedInput;
-    public Matrix CachedOutput;
-
     public LayerNorm(int inputSize, int outputSize) : base(inputSize, outputSize)
     {
-        InputSize = inputSize;
-        OutputSize = outputSize;
-
-        Gamma = new Parameter(1, inputSize);
-        Beta = new Parameter(1, inputSize);
+        Gamma = new Parameter(1, inputSize, "Gamma");
+        Beta = new Parameter(1, inputSize, "Beta");
 
         for(int i = 0; i < InputSize; i++)
         {
@@ -116,7 +110,7 @@ class LayerNorm : Layer
         for(int i = 0; i < InputSize; i++)
         {
             Gamma.Data[0,i] -= Gamma.Grad[0,i] * learningRate;
-            Gamma.Data[0,i] -= Beta.Grad[0,i] * learningRate;
+            Beta.Data[0,i] -= Beta.Grad[0,i] * learningRate;
 
             Gamma.Grad[0,i] = Beta.Grad[0,i] = 0;
         }

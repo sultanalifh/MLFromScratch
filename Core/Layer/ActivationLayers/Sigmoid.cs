@@ -1,10 +1,7 @@
-
-class ReLULayer : ActivationLayer
+class Sigmoid : ActivationLayer
 {
-    public ReLULayer(int inputSize, int outputSize) : base(inputSize, outputSize)
+    public Sigmoid(int inputSize, int outputSize) : base(inputSize, outputSize)
     {
-        InputSize = inputSize;
-        OutputSize = outputSize;
     }
 
     public override Matrix Activate(Matrix x)
@@ -19,7 +16,7 @@ class ReLULayer : ActivationLayer
         {
             for(int j = 0; j < InputSize; j++)
             {
-                output[i,j] = Math.Max(0, x[i,j]);
+                output[i,j] = 1 / (1 + Math.Exp(-x[i,j]));
             }
         }
 
@@ -38,7 +35,7 @@ class ReLULayer : ActivationLayer
         {
             for(int j = 0; j < OutputSize; j++)
             {
-                gradInput[i,j] = x[i,j] * (CachedInput[i,j] > 0 ? 1 : 0);
+                gradInput[i,j] = x[i,j] * CachedOutput[i,j] * (1 - CachedOutput[i,j]);
             }
         }
 

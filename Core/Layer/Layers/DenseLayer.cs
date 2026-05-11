@@ -1,20 +1,11 @@
 class DenseLayer : Layer
 {
-    // Parameters
     public Parameter Weights;
     public Parameter Bias; 
-
-    // Forward cache
-    public Matrix CachedInput;
-    public Matrix CachedOutput;
-
     public DenseLayer(int inputSize, int outputSize) : base(inputSize, outputSize)
     {
-        InputSize = inputSize;
-        OutputSize = outputSize;
-        
-        Weights = new Parameter(outputSize, inputSize);
-        Bias = new Parameter(outputSize, 1);
+        Weights = new Parameter(outputSize, inputSize, "Weight");
+        Bias = new Parameter(outputSize, 1, "Bias");
     }
 
     public override Matrix Forward(Matrix x)

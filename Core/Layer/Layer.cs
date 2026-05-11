@@ -1,8 +1,9 @@
 abstract class Layer
 {
     public int InputSize;
-
     public int OutputSize;
+    public Matrix CachedInput;
+    public Matrix CachedOutput;
 
     public Layer(int inputSize, int outputSize)
     {

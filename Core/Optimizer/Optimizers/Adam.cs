@@ -55,11 +55,13 @@ class Adam : Optimizer
                     
                     parameter.Data[j,k] -= LearningRate * vHat / (Math.Sqrt(varHat) + Utility.e5Eps);
 
-                    TBeta1 *= TBeta1;
-                    TBeta2 *= TBeta2;
+                    
                 }
             }
         }
+
+        TBeta1 *= TBeta1;
+        TBeta2 *= TBeta2;
     }
 
     public override void ZeroGrad()

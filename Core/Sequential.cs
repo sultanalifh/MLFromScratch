@@ -13,7 +13,7 @@ class Sequential
     }
     public Matrix Backward(Matrix yPred, Matrix yTrue)
     {
-        yPred = Loss.BinaryCrossEntropyGrad(yPred, yTrue);
+        yPred = Loss.CrossEntropyGrad(yPred, yTrue);
 
         for(int i = Layers.Count - 1; i >= 0; i--)
         {
@@ -31,7 +31,6 @@ class Sequential
 
         return x;
     }
-
     public IEnumerable<Parameter> Parameters()
     {
         foreach(Layer layer in Layers)
@@ -39,6 +38,26 @@ class Sequential
             foreach(Parameter param in layer.Parameters())
             {
                 yield return param;
+            }
+        }
+    }
+
+    public void ZeroGrad()
+    {
+        foreach(Layer layer in Layers)
+        {
+            foreach(Parameter parameter in layer.Parameters())
+            {
+                int paramRows = parameter.Grad.Rows;
+                int paramCols = parameter.Grad.Cols;
+
+                for(int i = 0; i < paramRows; i++)
+                {
+                    for(int j = 0; j < paramCols; j++)
+                    {
+                        parameter.Grad[i,j] = 0;
+                    }
+                }
             }
         }
     }
