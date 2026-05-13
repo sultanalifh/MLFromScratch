@@ -87,6 +87,32 @@ static class Loss
             }
         }
 
-        return loss;
+        return loss / BatchSize;
+    }
+
+    public static double L2Regularization(Sequential sequential)
+    {
+        double l2Loss = 0;
+
+        foreach(Layer layer in sequential.Layers)
+        {
+            foreach(Parameter parameter in layer.Parameters())
+            {
+                if(parameter.Name != "Weight") continue;
+
+                int weightRows = parameter.Data.Rows;
+                int weightCols = parameter.Data.Cols;
+
+                for(int i = 0; i < weightRows; i++)
+                {
+                    for(int j = 0; j < weightCols; j++)
+                    {
+                        l2Loss += parameter.Data[i,j] * parameter.Data[i,j];
+                    }
+                }
+            }
+        }
+
+        return l2Loss * 0.001;
     }
 }

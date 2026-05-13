@@ -2,6 +2,7 @@ abstract class ActivationLayer : Layer
 {
     public ActivationLayer(int inputSize, int outputSize) : base(inputSize, outputSize)
     {
+        
     }
 
     public override Matrix Backward(Matrix x) => Derivative(x);

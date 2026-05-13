@@ -1,0 +1,1162 @@
+--- Epoch 100 ---
+Loss: 0.6516671568796435
+Train Accuracy: 73%
+Test Accuracy: 67.66666666666666%
+
+--- Layer Stats ---
+Layer 1, DenseLayer
+Input size: 2
+Output size: 32
+Activation mean: -0.014476341049932678
+Activation var: 0.49205870999008283
+
+Weight mean: -0.014995689512154799
+Weight var: 0.21290402973992034
+Weight Grad mean: 6.0935718907646725
+Weight Grad max: 42.19031797873768
+
+Bias mean: -0.01587016293542504
+Bias var: 0.00316227766016838
+Bias Grad mean: 16.549821663046746
+Bias Grad max: 82.63197609230454
+
+Layer 2, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: 0.0880255421208696
+Activation var: 2.992783796308788
+
+Gamma mean: 2.0185401531478138
+Gamma var: 1.2141095697741342
+Gamma Grad mean: 1.4582085944422385
+Gamma Grad max: 7.248163512123679
+
+Beta mean: -0.021840649889103753
+Beta var: 0.6035588196158802
+Beta Grad mean: 3.134861217965167
+Beta Grad max: 8.944179097896885
+
+Layer 3, Tanh
+Input size: 32
+Output size: 32
+Activation mean: 0.034503377635526175
+Activation var: 0.6884202510682434
+
+Layer 4, Dropout
+Input size: 32
+Output size: 32
+Activation mean: 0.034503377635526175
+Activation var: 0.6884202510682434
+
+Layer 5, DenseLayer
+Input size: 32
+Output size: 32
+Activation mean: 0.011596609786217323
+Activation var: 1.0299794890820835
+
+Weight mean: 0.0033911235378219304
+Weight var: 0.14033564428077272
+Weight Grad mean: 1.7929076429741901
+Weight Grad max: 27.864848164577538
+
+Bias mean: 0.0480091142045201
+Bias var: 0.00316227766016838
+Bias Grad mean: 2.907857230420247
+Bias Grad max: 18.09854959819287
+
+Layer 6, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.18254910040549235
+Activation var: 2.7192221219089108
+
+Gamma mean: 1.7663243130353898
+Gamma var: 1.0346345886486807
+Gamma Grad mean: 0.5584434449882819
+Gamma Grad max: 1.652481527447553
+
+Beta mean: -0.0867345681594022
+Beta var: 0.4530472070774146
+Beta Grad mean: 1.0275212997170395
+Beta Grad max: 5.044658636752523
+
+Layer 7, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.03542771673865663
+Activation var: 0.7286706199635358
+
+Layer 8, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.03542771673865663
+Activation var: 0.7286706199635358
+
+Layer 9, DenseLayer
+Input size: 32
+Output size: 3
+Activation mean: 0.03126237985328204
+Activation var: 0.889173322304976
+
+Weight mean: -0.002473510306467093
+Weight var: 0.2220043300766861
+Weight Grad mean: 5.6428376303584145
+Weight Grad max: 21.08125368326799
+
+Bias mean: 0.022442230632512022
+Bias var: 0.0031622776601683794
+Bias Grad mean: 0.4576740249345714
+Bias Grad max: 0.6865110374018597
+
+Layer 10, Softmax
+Input size: 3
+Output size: 3
+Activation mean: 0.3333333333333322
+Activation var: 0.23627358439577084
+
+--- Epoch 200 ---
+Loss: 0.4949304724072593
+Train Accuracy: 83%
+Test Accuracy: 73.33333333333333%
+
+--- Layer Stats ---
+Layer 1, DenseLayer
+Input size: 2
+Output size: 32
+Activation mean: -0.016677169237356543
+Activation var: 0.4891198374627545
+
+Weight mean: -0.0034880833342754436
+Weight var: 0.1911410751978326
+Weight Grad mean: 9.821311085841836
+Weight Grad max: 87.5129086783457
+
+Bias mean: -0.01719333121224748
+Bias var: 0.00316227766016838
+Bias Grad mean: 14.881761511884582
+Bias Grad max: 56.62311210087008
+
+Layer 2, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: 0.07206290635546689
+Activation var: 3.5463666035807195
+
+Gamma mean: 2.4643954187867108
+Gamma var: 1.5233070417536232
+Gamma Grad mean: 1.4592884116801788
+Gamma Grad max: 8.673884865319396
+
+Beta mean: -0.05498758905147426
+Beta var: 0.7815613823793153
+Beta Grad mean: 3.3173620659635508
+Beta Grad max: 10.567654738992752
+
+Layer 3, Tanh
+Input size: 32
+Output size: 32
+Activation mean: 0.021429454221581296
+Activation var: 0.689079125113151
+
+Layer 4, Dropout
+Input size: 32
+Output size: 32
+Activation mean: 0.021429454221581296
+Activation var: 0.689079125113151
+
+Layer 5, DenseLayer
+Input size: 32
+Output size: 32
+Activation mean: 0.07965793637664098
+Activation var: 1.0308968105566427
+
+Weight mean: -0.0008971697922589964
+Weight var: 0.14455278414222741
+Weight Grad mean: 1.8464146876153869
+Weight Grad max: 20.6992456679769
+
+Bias mean: 0.06155905632429472
+Bias var: 0.00316227766016838
+Bias Grad mean: 2.42209419691775
+Bias Grad max: 8.923583406764863
+
+Layer 6, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.28809313931909275
+Activation var: 3.8004498916057643
+
+Gamma mean: 2.35521334734059
+Gamma var: 1.4519656744619525
+Gamma Grad mean: 0.3788796056842526
+Gamma Grad max: 3.0025170218535537
+
+Beta mean: -0.11298779587553155
+Beta var: 0.6009475766503994
+Beta Grad mean: 1.044298673084259
+Beta Grad max: 4.188521655024275
+
+Layer 7, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.019478404549576066
+Activation var: 0.7447196424070763
+
+Layer 8, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.019478404549576066
+Activation var: 0.7447196424070763
+
+Layer 9, DenseLayer
+Input size: 32
+Output size: 3
+Activation mean: 0.023667869345425755
+Activation var: 1.0983384199194137
+
+Weight mean: 0.0003633641711893454
+Weight var: 0.2959351251535564
+Weight Grad mean: 5.190253442456922
+Weight Grad max: 23.036229092880866
+
+Bias mean: 0.02987093202822319
+Bias var: 0.0031622776601683794
+Bias Grad mean: 4.819303892567081
+Bias Grad max: 7.228955838850596
+
+Layer 10, Softmax
+Input size: 3
+Output size: 3
+Activation mean: 0.3333333333333322
+Activation var: 0.2875619975866753
+
+--- Epoch 300 ---
+Loss: 0.3433158670708032
+Train Accuracy: 88.66666666666667%
+Test Accuracy: 83.66666666666667%
+
+--- Layer Stats ---
+Layer 1, DenseLayer
+Input size: 2
+Output size: 32
+Activation mean: -0.01227910062850957
+Activation var: 0.5020448824128205
+
+Weight mean: -0.0036398086441039954
+Weight var: 0.18508067812627801
+Weight Grad mean: 16.56734116474821
+Weight Grad max: 78.47900794010353
+
+Bias mean: -0.012293956791894491
+Bias var: 0.00316227766016838
+Bias Grad mean: 12.646243348884783
+Bias Grad max: 37.06007465229868
+
+Layer 2, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: 0.034724397040280505
+Activation var: 3.716655800125854
+
+Gamma mean: 2.7195222993415893
+Gamma var: 1.715784648838505
+Gamma Grad mean: 1.226893887321926
+Gamma Grad max: 4.2619057165563206
+
+Beta mean: -0.07478238562587568
+Beta var: 0.8888083420136387
+Beta Grad mean: 1.8188715858232338
+Beta Grad max: 4.642678046898276
+
+Layer 3, Tanh
+Input size: 32
+Output size: 32
+Activation mean: 0.020212219113476423
+Activation var: 0.6938937732949284
+
+Layer 4, Dropout
+Input size: 32
+Output size: 32
+Activation mean: 0.020212219113476423
+Activation var: 0.6938937732949284
+
+Layer 5, DenseLayer
+Input size: 32
+Output size: 32
+Activation mean: 0.00810566264267567
+Activation var: 1.1628529235031204
+
+Weight mean: -0.0013390366188471047
+Weight var: 0.15344421172956102
+Weight Grad mean: 2.393125311077685
+Weight Grad max: 21.558045119380647
+
+Bias mean: 0.0297897124580404
+Bias var: 0.00316227766016838
+Bias Grad mean: 2.8413799561029545
+Bias Grad max: 15.722406260756312
+
+Layer 6, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.2026670829812553
+Activation var: 4.338395650708001
+
+Gamma mean: 2.8421975366965055
+Gamma var: 1.810051158941351
+Gamma Grad mean: 0.26794600592157
+Gamma Grad max: 1.9975008466876225
+
+Beta mean: -0.13596397256533269
+Beta var: 0.6772532693239298
+Beta Grad mean: 0.8104641614625414
+Beta Grad max: 4.106053833436274
+
+Layer 7, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.04572784124088801
+Activation var: 0.7727166642121368
+
+Layer 8, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.04572784124088801
+Activation var: 0.7727166642121368
+
+Layer 9, DenseLayer
+Input size: 32
+Output size: 3
+Activation mean: 0.022809522580625255
+Activation var: 1.3149328914146268
+
+Weight mean: 0.00264263178169846
+Weight var: 0.3806079455117836
+Weight Grad mean: 4.7573228095364515
+Weight Grad max: 19.201524453605888
+
+Bias mean: 0.025811121527959557
+Bias var: 0.0031622776601683794
+Bias Grad mean: 2.5067086287456712
+Bias Grad max: 3.760062943118508
+
+Layer 10, Softmax
+Input size: 3
+Output size: 3
+Activation mean: 0.3333333333333322
+Activation var: 0.3230949006746504
+
+--- Epoch 400 ---
+Loss: 0.21692169080078932
+Train Accuracy: 93.33333333333333%
+Test Accuracy: 87%
+
+--- Layer Stats ---
+Layer 1, DenseLayer
+Input size: 2
+Output size: 32
+Activation mean: -0.007021053654531742
+Activation var: 0.5583067313057655
+
+Weight mean: -0.006667248420759123
+Weight var: 0.18139987980902042
+Weight Grad mean: 14.409173464388061
+Weight Grad max: 138.59550250840198
+
+Bias mean: -0.007257822114977732
+Bias var: 0.00316227766016838
+Bias Grad mean: 32.09494294844963
+Bias Grad max: 170.63252409693837
+
+Layer 2, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.06194263233184243
+Activation var: 4.148652106239857
+
+Gamma mean: 2.9773716683127125
+Gamma var: 1.9277778557124339
+Gamma Grad mean: 6.854855825987
+Gamma Grad max: 38.356611967193395
+
+Beta mean: -0.09123731330051497
+Beta var: 0.9303430040471452
+Beta Grad mean: 11.574159484843287
+Beta Grad max: 43.96601461513255
+
+Layer 3, Tanh
+Input size: 32
+Output size: 32
+Activation mean: 0.001765898329494601
+Activation var: 0.6998842092015598
+
+Layer 4, Dropout
+Input size: 32
+Output size: 32
+Activation mean: 0.001765898329494601
+Activation var: 0.6998842092015598
+
+Layer 5, DenseLayer
+Input size: 32
+Output size: 32
+Activation mean: -0.018618622847450136
+Activation var: 1.2387920947585154
+
+Weight mean: 3.549272231837745E-05
+Weight var: 0.16509855285417857
+Weight Grad mean: 2.125978310619649
+Weight Grad max: 21.903800887279015
+
+Bias mean: -0.024755603177562324
+Bias var: 0.00316227766016838
+Bias Grad mean: 3.2585958657654817
+Bias Grad max: 19.8410340494845
+
+Layer 6, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.03938274828510036
+Activation var: 5.048012836880323
+
+Gamma mean: 3.3634521359150775
+Gamma var: 2.0148433894879294
+Gamma Grad mean: 0.32342577144239093
+Gamma Grad max: 2.3472993333262364
+
+Beta mean: -0.12222059076407407
+Beta var: 0.864499534330942
+Beta Grad mean: 0.7651192323338885
+Beta Grad max: 3.6612313399110374
+
+Layer 7, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.040761547758954124
+Activation var: 0.7979170194998304
+
+Layer 8, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.040761547758954124
+Activation var: 0.7979170194998304
+
+Layer 9, DenseLayer
+Input size: 32
+Output size: 3
+Activation mean: 0.03325798651774581
+Activation var: 1.5766008451339792
+
+Weight mean: 0.0012587394624836896
+Weight var: 0.4507308331244943
+Weight Grad mean: 4.031740875356913
+Weight Grad max: 18.145951382130434
+
+Bias mean: 0.024371628621566
+Bias var: 0.0031622776601683794
+Bias Grad mean: 1.9904335769114854
+Bias Grad max: 2.985650365367228
+
+Layer 10, Softmax
+Input size: 3
+Output size: 3
+Activation mean: 0.3333333333333322
+Activation var: 0.36740905513773664
+
+--- Epoch 500 ---
+Loss: 0.1432202775273662
+Train Accuracy: 95%
+Test Accuracy: 91.33333333333333%
+
+--- Layer Stats ---
+Layer 1, DenseLayer
+Input size: 2
+Output size: 32
+Activation mean: -0.0032537809824003173
+Activation var: 0.5427708056916031
+
+Weight mean: 0.0003910397132894823
+Weight var: 0.18041381699396225
+Weight Grad mean: 12.570596420160378
+Weight Grad max: 84.70897451742535
+
+Bias mean: -0.002574758663758693
+Bias var: 0.00316227766016838
+Bias Grad mean: 13.687071009879816
+Bias Grad max: 97.19940152279892
+
+Layer 2, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.08740293220182996
+Activation var: 4.370645071562607
+
+Gamma mean: 3.211639544342636
+Gamma var: 2.1124011475671964
+Gamma Grad mean: 0.7369249869420644
+Gamma Grad max: 6.461358493610533
+
+Beta mean: -0.11335192720123607
+Beta var: 0.9875373331595463
+Beta Grad mean: 1.522548806067773
+Beta Grad max: 6.833173440536553
+
+Layer 3, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.00839281031563339
+Activation var: 0.7039464831810172
+
+Layer 4, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.00839281031563339
+Activation var: 0.7039464831810172
+
+Layer 5, DenseLayer
+Input size: 32
+Output size: 32
+Activation mean: -0.0167947586346322
+Activation var: 1.2879325679871219
+
+Weight mean: 0.0008328351744966904
+Weight var: 0.17032371653998885
+Weight Grad mean: 1.338142644765608
+Weight Grad max: 22.129332356745426
+
+Bias mean: -0.007882116161932675
+Bias var: 0.00316227766016838
+Bias Grad mean: 1.9084165152559833
+Bias Grad max: 12.628689788837976
+
+Layer 6, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.1890557927066045
+Activation var: 5.124078174809961
+
+Gamma mean: 3.7982422813017744
+Gamma var: 2.1058602889267957
+Gamma Grad mean: 0.21174527799499052
+Gamma Grad max: 1.0010714097046975
+
+Beta mean: -0.14127107145654197
+Beta var: 0.972925392919619
+Beta Grad mean: 0.6307950928046195
+Beta Grad max: 3.8849961541464713
+
+Layer 7, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.019049742413702987
+Activation var: 0.8195899220810733
+
+Layer 8, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.019049742413702987
+Activation var: 0.8195899220810733
+
+Layer 9, DenseLayer
+Input size: 32
+Output size: 3
+Activation mean: 0.02444440663550159
+Activation var: 1.8137641478978042
+
+Weight mean: 8.904617893917832E-05
+Weight var: 0.49576357021406564
+Weight Grad mean: 3.080880182225189
+Weight Grad max: 9.602724359882107
+
+Bias mean: 0.02378511518703715
+Bias var: 0.0031622776601683794
+Bias Grad mean: 3.3751275232432554
+Bias Grad max: 5.06269128486489
+
+Layer 10, Softmax
+Input size: 3
+Output size: 3
+Activation mean: 0.3333333333333322
+Activation var: 0.3914487569556159
+
+--- Epoch 600 ---
+Loss: 0.13203072467594776
+Train Accuracy: 95.66666666666667%
+Test Accuracy: 93.66666666666667%
+
+--- Layer Stats ---
+Layer 1, DenseLayer
+Input size: 2
+Output size: 32
+Activation mean: -0.003968849552321174
+Activation var: 0.5459564943851641
+
+Weight mean: 0.0008078192588257503
+Weight var: 0.19016847724783495
+Weight Grad mean: 10.874661535135406
+Weight Grad max: 43.82559828711651
+
+Bias mean: -0.003704479173379788
+Bias var: 0.00316227766016838
+Bias Grad mean: 10.87985971221113
+Bias Grad max: 81.50891554701512
+
+Layer 2, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.10756717714094469
+Activation var: 4.700468469064668
+
+Gamma mean: 3.409204194424713
+Gamma var: 2.2995971571263665
+Gamma Grad mean: 0.813910815828992
+Gamma Grad max: 8.11578292272505
+
+Beta mean: -0.15379082905521443
+Beta var: 1.041219823958214
+Beta Grad mean: 1.6220674458558964
+Beta Grad max: 8.980356325873663
+
+Layer 3, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.02414079543011527
+Activation var: 0.711877795608244
+
+Layer 4, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.02414079543011527
+Activation var: 0.711877795608244
+
+Layer 5, DenseLayer
+Input size: 32
+Output size: 32
+Activation mean: -0.03290278352029843
+Activation var: 1.2841393270236947
+
+Weight mean: -0.0009592530773619266
+Weight var: 0.17261766010874063
+Weight Grad mean: 1.2833759282365307
+Weight Grad max: 16.13515400230531
+
+Bias mean: -0.016899604912777158
+Bias var: 0.00316227766016838
+Bias Grad mean: 1.5864454227935987
+Bias Grad max: 5.883015484835217
+
+Layer 6, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.20193775185209448
+Activation var: 5.454333667753042
+
+Gamma mean: 4.063412252592455
+Gamma var: 2.222254362833231
+Gamma Grad mean: 0.19131647866441448
+Gamma Grad max: 1.445229586979864
+
+Beta mean: -0.15507176587062466
+Beta var: 1.0393945236022666
+Beta Grad mean: 0.48915669868424116
+Beta Grad max: 1.773628122524042
+
+Layer 7, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.021484044645196435
+Activation var: 0.8270098053390065
+
+Layer 8, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.021484044645196435
+Activation var: 0.8270098053390065
+
+Layer 9, DenseLayer
+Input size: 32
+Output size: 3
+Activation mean: 0.019786290387638752
+Activation var: 1.9087772543229444
+
+Weight mean: -0.0001751635922945307
+Weight var: 0.5008573073012592
+Weight Grad mean: 2.605743952480643
+Weight Grad max: 9.644669555602317
+
+Bias mean: 0.024246123093063027
+Bias var: 0.0031622776601683794
+Bias Grad mean: 4.823590518685468
+Bias Grad max: 7.2353857780282
+
+Layer 10, Softmax
+Input size: 3
+Output size: 3
+Activation mean: 0.3333333333333322
+Activation var: 0.4035934860680054
+
+--- Epoch 700 ---
+Loss: 0.12904462709537984
+Train Accuracy: 96.66666666666667%
+Test Accuracy: 92.33333333333333%
+
+--- Layer Stats ---
+Layer 1, DenseLayer
+Input size: 2
+Output size: 32
+Activation mean: -0.0018129734330605267
+Activation var: 0.5565943240185298
+
+Weight mean: 0.0011976510125264322
+Weight var: 0.1947151690926066
+Weight Grad mean: 12.136615041995608
+Weight Grad max: 74.88152016873121
+
+Bias mean: -0.0028179448172770995
+Bias var: 0.00316227766016838
+Bias Grad mean: 21.34635849480546
+Bias Grad max: 112.66518493522382
+
+Layer 2, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.09029861246921067
+Activation var: 4.991310456745772
+
+Gamma mean: 3.584645943110177
+Gamma var: 2.441766213535712
+Gamma Grad mean: 1.7771699000269414
+Gamma Grad max: 13.239849755497165
+
+Beta mean: -0.1682463844649077
+Beta var: 1.0574716990745514
+Beta Grad mean: 3.541245748707958
+Beta Grad max: 15.442726256366118
+
+Layer 3, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.04161650486038114
+Activation var: 0.7146127643407928
+
+Layer 4, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.04161650486038114
+Activation var: 0.7146127643407928
+
+Layer 5, DenseLayer
+Input size: 32
+Output size: 32
+Activation mean: -0.017239473098285833
+Activation var: 1.2572645765023078
+
+Weight mean: 0.0015212659170910092
+Weight var: 0.1682595099428251
+Weight Grad mean: 1.9994510896781974
+Weight Grad max: 25.38097504860465
+
+Bias mean: -0.01854103893708857
+Bias var: 0.00316227766016838
+Bias Grad mean: 3.4775155228605676
+Bias Grad max: 13.460571507719681
+
+Layer 6, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.3321958712393484
+Activation var: 5.78850167362154
+
+Gamma mean: 4.277916135653521
+Gamma var: 2.331822900891915
+Gamma Grad mean: 0.30263112358346084
+Gamma Grad max: 2.7333849213624077
+
+Beta mean: -0.1803766902784681
+Beta var: 1.0936313173918832
+Beta Grad mean: 0.8627884989158336
+Beta Grad max: 3.925735017645022
+
+Layer 7, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.024051690503256423
+Activation var: 0.8275211679120903
+
+Layer 8, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.024051690503256423
+Activation var: 0.8275211679120903
+
+Layer 9, DenseLayer
+Input size: 32
+Output size: 3
+Activation mean: 0.01893891330723863
+Activation var: 2.006634746073778
+
+Weight mean: 0.0005614447234626868
+Weight var: 0.49596943157504464
+Weight Grad mean: 2.3073702338862137
+Weight Grad max: 9.703734083915782
+
+Bias mean: 0.024770591024426292
+Bias var: 0.0031622776601683794
+Bias Grad mean: 1.468766607544848
+Bias Grad max: 2.2031499113172672
+
+Layer 10, Softmax
+Input size: 3
+Output size: 3
+Activation mean: 0.3333333333333322
+Activation var: 0.39610576565712746
+
+--- Epoch 800 ---
+Loss: 0.08910738268183839
+Train Accuracy: 98.33333333333333%
+Test Accuracy: 93.66666666666667%
+
+--- Layer Stats ---
+Layer 1, DenseLayer
+Input size: 2
+Output size: 32
+Activation mean: 0.0012091464433136806
+Activation var: 0.545249126705155
+
+Weight mean: 0.0012294029564023992
+Weight var: 0.19756849568860782
+Weight Grad mean: 7.014462097568584
+Weight Grad max: 83.81571499329783
+
+Bias mean: 0.0009394244424422845
+Bias var: 0.00316227766016838
+Bias Grad mean: 21.340046279807993
+Bias Grad max: 199.7532354640914
+
+Layer 2, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.11842034065296493
+Activation var: 5.152716281095895
+
+Gamma mean: 3.7177638832641233
+Gamma var: 2.540992931762285
+Gamma Grad mean: 1.1867472665049896
+Gamma Grad max: 11.521436993984056
+
+Beta mean: -0.18066024099949868
+Beta var: 1.0865804150306786
+Beta Grad mean: 2.6367262481485976
+Beta Grad max: 12.763504591638148
+
+Layer 3, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.04343403984160976
+Activation var: 0.716683034637176
+
+Layer 4, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.04343403984160976
+Activation var: 0.716683034637176
+
+Layer 5, DenseLayer
+Input size: 32
+Output size: 32
+Activation mean: -0.0034343993537547537
+Activation var: 1.262598501386926
+
+Weight mean: -0.0038720974871345824
+Weight var: 0.16885368492582778
+Weight Grad mean: 1.7715718585848559
+Weight Grad max: 18.864415342109904
+
+Bias mean: -0.015313223650147933
+Bias var: 0.00316227766016838
+Bias Grad mean: 2.5437219151630437
+Bias Grad max: 8.856199194647811
+
+Layer 6, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.45340771859055395
+Activation var: 5.942213527871465
+
+Gamma mean: 4.474861402923648
+Gamma var: 2.3984216784668018
+Gamma Grad mean: 0.29139221195667425
+Gamma Grad max: 4.17439684002265
+
+Beta mean: -0.19305645359177787
+Beta var: 1.1382866966917238
+Beta Grad mean: 0.710993063324311
+Beta Grad max: 3.9152396676919645
+
+Layer 7, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.030545125112537055
+Activation var: 0.8384609253913238
+
+Layer 8, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.030545125112537055
+Activation var: 0.8384609253913238
+
+Layer 9, DenseLayer
+Input size: 32
+Output size: 3
+Activation mean: 0.023346138160512023
+Activation var: 2.0431306043942534
+
+Weight mean: 0.00048083981821467797
+Weight var: 0.5115538350223945
+Weight Grad mean: 2.278280675137336
+Weight Grad max: 8.513482759068834
+
+Bias mean: 0.025734787538051935
+Bias var: 0.0031622776601683794
+Bias Grad mean: 2.017797476181691
+Bias Grad max: 3.0266962142725355
+
+Layer 10, Softmax
+Input size: 3
+Output size: 3
+Activation mean: 0.3333333333333322
+Activation var: 0.41537306837480936
+
+--- Epoch 900 ---
+Loss: 0.06685894616270817
+Train Accuracy: 99.33333333333333%
+Test Accuracy: 97.33333333333334%
+
+--- Layer Stats ---
+Layer 1, DenseLayer
+Input size: 2
+Output size: 32
+Activation mean: 0.0011853753845193432
+Activation var: 0.5611848697760273
+
+Weight mean: -0.002513426889844992
+Weight var: 0.20017818945447732
+Weight Grad mean: 8.946951759179605
+Weight Grad max: 30.657034222766544
+
+Bias mean: 0.0004695638232680981
+Bias var: 0.00316227766016838
+Bias Grad mean: 30.757096471346106
+Bias Grad max: 223.27333310867533
+
+Layer 2, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.11458371044046357
+Activation var: 5.404366116131776
+
+Gamma mean: 3.8606019306494614
+Gamma var: 2.6541112413829873
+Gamma Grad mean: 2.6663802247897377
+Gamma Grad max: 14.734702920030864
+
+Beta mean: -0.18940582932494282
+Beta var: 1.1082354639852372
+Beta Grad mean: 5.178549711657839
+Beta Grad max: 19.828462488927215
+
+Layer 3, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.039301318691259815
+Activation var: 0.718181762128954
+
+Layer 4, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.039301318691259815
+Activation var: 0.718181762128954
+
+Layer 5, DenseLayer
+Input size: 32
+Output size: 32
+Activation mean: -0.014338215671908084
+Activation var: 1.2979316261043825
+
+Weight mean: -0.001901406791331693
+Weight var: 0.1729639324564687
+Weight Grad mean: 1.9440386179507554
+Weight Grad max: 17.861496939134735
+
+Bias mean: -0.010864762287945796
+Bias var: 0.00316227766016838
+Bias Grad mean: 3.2628095759952593
+Bias Grad max: 14.948821005939772
+
+Layer 6, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.2912773384810965
+Activation var: 6.0213900357192065
+
+Gamma mean: 4.728858965024396
+Gamma var: 2.435995018364927
+Gamma Grad mean: 0.2880584221429577
+Gamma Grad max: 4.1077079173129825
+
+Beta mean: -0.20299066431096927
+Beta var: 1.2229627290932676
+Beta Grad mean: 0.9471487412183744
+Beta Grad max: 5.471296180417802
+
+Layer 7, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.034260521187736974
+Activation var: 0.8418343743166451
+
+Layer 8, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.034260521187736974
+Activation var: 0.8418343743166451
+
+Layer 9, DenseLayer
+Input size: 32
+Output size: 3
+Activation mean: 0.024161330030422347
+Activation var: 2.1174985584044608
+
+Weight mean: 0.0008175493853256333
+Weight var: 0.5412476518297172
+Weight Grad mean: 1.7635135300639446
+Weight Grad max: 5.742860863659422
+
+Bias mean: 0.027180836693251036
+Bias var: 0.0031622776601683794
+Bias Grad mean: 3.7980285525306705
+Bias Grad max: 5.6970428287959995
+
+Layer 10, Softmax
+Input size: 3
+Output size: 3
+Activation mean: 0.3333333333333322
+Activation var: 0.42515561005557223
+
+--- Epoch 1000 ---
+Loss: 0.05554170162196217
+Train Accuracy: 98.66666666666667%
+Test Accuracy: 96.66666666666667%
+
+--- Layer Stats ---
+Layer 1, DenseLayer
+Input size: 2
+Output size: 32
+Activation mean: -0.0009024497213567426
+Activation var: 0.5514938750438985
+
+Weight mean: -0.0007304895457155569
+Weight var: 0.19846378768077672
+Weight Grad mean: 29.9547373067767
+Weight Grad max: 157.81795754106773
+
+Bias mean: -0.0001408563770726966
+Bias var: 0.00316227766016838
+Bias Grad mean: 25.786284440083318
+Bias Grad max: 123.52878506128825
+
+Layer 2, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.15646021315684414
+Activation var: 5.54484242154729
+
+Gamma mean: 3.959545687191235
+Gamma var: 2.7503948608831834
+Gamma Grad mean: 3.4719252357437234
+Gamma Grad max: 12.315013203066256
+
+Beta mean: -0.21191274861486367
+Beta var: 1.1406593639277758
+Beta Grad mean: 5.468053950211816
+Beta Grad max: 14.223462312914219
+
+Layer 3, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.040065689359675055
+Activation var: 0.7219188966164026
+
+Layer 4, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.040065689359675055
+Activation var: 0.7219188966164026
+
+Layer 5, DenseLayer
+Input size: 32
+Output size: 32
+Activation mean: -0.002503850984036625
+Activation var: 1.3145081233609743
+
+Weight mean: -0.0022866090099789658
+Weight var: 0.16910820633590723
+Weight Grad mean: 2.797066436265977
+Weight Grad max: 41.38517754364859
+
+Bias mean: -0.011910895246314588
+Bias var: 0.00316227766016838
+Bias Grad mean: 4.012028215897429
+Bias Grad max: 44.17673646801962
+
+Layer 6, LayerNorm
+Input size: 32
+Output size: 32
+Activation mean: -0.3835926343571302
+Activation var: 6.155296468234664
+
+Gamma mean: 4.905709116373249
+Gamma var: 2.4965181976903557
+Gamma Grad mean: 0.12969006399201644
+Gamma Grad max: 0.5704924183196945
+
+Beta mean: -0.20747622357076642
+Beta var: 1.2842856072996343
+Beta Grad mean: 0.6698325258775892
+Beta Grad max: 5.036885343427855
+
+Layer 7, Tanh
+Input size: 32
+Output size: 32
+Activation mean: -0.04929039783698998
+Activation var: 0.8464035129003542
+
+Layer 8, Dropout
+Input size: 32
+Output size: 32
+Activation mean: -0.04929039783698998
+Activation var: 0.8464035129003542
+
+Layer 9, DenseLayer
+Input size: 32
+Output size: 3
+Activation mean: 0.02202215166941266
+Activation var: 2.1986453322613873
+
+Weight mean: 0.0007294527591718848
+Weight var: 0.5532513415689566
+Weight Grad mean: 2.3662212641668323
+Weight Grad max: 10.575952090638797
+
+Bias mean: 0.027901552889548337
+Bias var: 0.0031622776601683794
+Bias Grad mean: 1.0386056902709235
+Bias Grad max: 1.5579085354063822
+
+Layer 10, Softmax
+Input size: 3
+Output size: 3
+Activation mean: 0.3333333333333322
+Activation var: 0.43214677558037307
+
+Note: Oke dari segi perkembangan Accuracy terlihat cukup sehat ya, Sifu... 
+Disini gamma nya sampe 5, cukup besar juga... dan di epoch terakhir dense layer activation var nya bisa sampe 2...

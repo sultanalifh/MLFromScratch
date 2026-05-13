@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "ELblJRa7WvI=",
+  "dgSpecHash": "+K72xqjB4OM=",
   "success": true,
   "projectFilePath": "C:\\Users\\sulta\\MLFromScratch\\MLFromScratch.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\sulta\\.nuget\\packages\\microsoft.win32.systemevents\\10.0.7\\microsoft.win32.systemevents.10.0.7.nupkg.sha512",
+    "C:\\Users\\sulta\\.nuget\\packages\\system.drawing.common\\10.0.7\\system.drawing.common.10.0.7.nupkg.sha512"
+  ],
   "logs": []
 }

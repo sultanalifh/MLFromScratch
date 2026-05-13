@@ -32,7 +32,7 @@ static class Stats
     public static double Variance(Matrix x)
     {
         int rows = x.Rows;
-        int cols = 0;
+        int cols = x.Cols;
 
         Matrix mean = new Matrix(rows, 1);
 
@@ -137,13 +137,13 @@ static class Stats
         return false;
     }
 
-    public static string ZeroRatio(Matrix x)
+    public static double ZeroRatio(Matrix x)
     {
         int rows = x.Rows;
         int cols = x.Cols;
 
         int totalElem = rows * cols;
-        int totalZero = 0;
+        double totalZero = 0;
 
         for(int i = 0; i < rows; i++)
         {
@@ -153,13 +153,6 @@ static class Stats
             }
         }
 
-        totalElem -= totalZero;
-
-        int gcd = totalZero == 0 || totalElem == 0 ? 1 : Utility.GCD(totalElem, totalZero);
-
-        totalElem /= gcd;
-        totalZero /= gcd;
-
-        return $"{totalZero} : {totalElem}";
+        return totalZero / totalElem;
     }
 }

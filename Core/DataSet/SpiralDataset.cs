@@ -25,7 +25,7 @@ class SpiralDataset
             for(int j = 0; j < NumSamplePerClass; j++)
             {
                 double t = Utility.Random.NextDouble();
-                double r = t;
+                double r = t * 2;
 
                 double theta = baseAngle + t * 4 * Math.PI;
 

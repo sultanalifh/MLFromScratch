@@ -39,7 +39,7 @@ class DenseLayer : Layer
                 double w_grad = x[i,j];
                 for(int k = 0; k < InputSize; k++)
                 {
-                    Weights.Grad[j,k] += w_grad * CachedInput[i,k];
+                    Weights.Grad[j,k] += w_grad * CachedInput[i,k] + 2 * Lambda * Weights.Data[j,k];
                     gradInput[i,k] += w_grad * Weights.Data[j,k];
                 }
                 Bias.Grad[j,0] += w_grad;

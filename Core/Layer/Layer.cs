@@ -2,8 +2,11 @@ abstract class Layer
 {
     public int InputSize;
     public int OutputSize;
+
     public Matrix CachedInput;
     public Matrix CachedOutput;
+
+    public const double Lambda = 0.001;
 
     public Layer(int inputSize, int outputSize)
     {

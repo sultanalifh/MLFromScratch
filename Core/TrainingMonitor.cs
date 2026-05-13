@@ -6,7 +6,7 @@ static class TrainingMonitor
         Console.WriteLine($"Loss: {loss}");
         Console.WriteLine($"Train Accuracy: {trainAcc}%");
         Console.WriteLine($"Test Accuracy: {testAcc}%");
-
+        Console.WriteLine();
         Console.WriteLine("--- Layer Stats --- ");
 
         int numLayers = model.Layers.Count;
@@ -28,7 +28,7 @@ static class TrainingMonitor
 
                 if(layer is ReLU)
                 {
-                    Console.WriteLine($"Zero ratio: {Stats.ZeroRatio(layer.CachedOutput)}");
+                    Console.WriteLine($"Zero ratio: {Stats.ZeroRatio(layer.CachedOutput) * 100}%");
                 }
 
                 if (Stats.HasNaN(layer.CachedOutput))
@@ -61,8 +61,13 @@ static class TrainingMonitor
         {
             throw new ArgumentOutOfRangeException("Index layer out of bounds!");
         }
+        else if(testcase.Rows != ans.Rows)
+        {
+            throw new ArgumentException("Shape mismatch!");
+        }
 
         Layer layer = sequential.Layers[layerPos];
+        int batchSize = testcase.Rows;
         string layerName = layer.GetType().Name;
 
         Console.WriteLine($"--- Numerical Grad analysis on layer {layerPos}, {layerName} ---");
@@ -83,21 +88,21 @@ static class TrainingMonitor
             parameter.Data[0,0] = originalWeight + Utility.e5Eps;
             
             Matrix sample1 = sequential.Predict(testcase);
-            double sample1Loss = Loss.CrossEntropyValue(sample1, ans);
+            double sample1Loss = (Loss.CrossEntropyValue(sample1, ans) + Loss.L2Regularization(sequential)) * batchSize;
 
             parameter.Data[0,0] = originalWeight - Utility.e5Eps;
 
             Matrix sample2 = sequential.Predict(testcase);
-            double sample2Loss = Loss.CrossEntropyValue(sample2, ans);
+            double sample2Loss = (Loss.CrossEntropyValue(sample2, ans) + Loss.L2Regularization(sequential)) * batchSize;
 
-            double numericalGrad = (sample1Loss - sample2Loss)/(2*Utility.e5Eps);
+            double numericalGrad = (sample1Loss - sample2Loss) / (2 * Utility.e5Eps);
 
             double diff = Math.Abs(analyticalGrad - numericalGrad);
-            double accuracy = (1 - diff) * 100;
+            double accuracy = diff / (Math.Abs(analyticalGrad) + Math.Abs(numericalGrad) + 1e-8);
 
             Console.WriteLine($"Analytical Gradient: {analyticalGrad}");
             Console.WriteLine($"Numerical Gradient: {numericalGrad}");
-            Console.WriteLine($"Accuracy: {accuracy}%");
+            Console.WriteLine($"Relative Error: {accuracy}");
 
             parameter.Data[0,0] = originalWeight;
         }
