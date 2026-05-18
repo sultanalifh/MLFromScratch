@@ -17,7 +17,7 @@ class LeakyReLU : ActivationLayer
         {
             for(int j = 0; j < InputSize; j++)
             {
-                output[i,j] = Math.Max(0.01, x[i,j]);
+                output[i,j] = Math.Max(0.01 * x[i,j], x[i,j]);
             }
         }
 

@@ -1,9 +1,10 @@
+using System.Text.Json.Serialization;
+
 class Dropout : Layer
 {
-    public Matrix Mask;
-
+    [JsonInclude]
     public double DropoutRate;
-
+    public Matrix Mask;
     public bool IsTraining;
 
     public Dropout(int inputSize, int outputSize, double dropOutRate) : base(inputSize, outputSize)

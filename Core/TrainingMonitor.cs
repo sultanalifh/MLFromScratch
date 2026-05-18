@@ -1,6 +1,6 @@
 static class TrainingMonitor
 {
-    public static void LogEpoch(int epoch, double loss, double trainAcc, double testAcc, Sequential model)
+    public static void LogEpoch(int epoch, double loss, double trainAcc, double testAcc, NeuralNetwork network)
     {
         Console.WriteLine($"--- Epoch {epoch} ---");
         Console.WriteLine($"Loss: {loss}");
@@ -8,6 +8,8 @@ static class TrainingMonitor
         Console.WriteLine($"Test Accuracy: {testAcc}%");
         Console.WriteLine();
         Console.WriteLine("--- Layer Stats --- ");
+
+        Sequential model = network.Sequential;
 
         int numLayers = model.Layers.Count;
 
@@ -26,7 +28,7 @@ static class TrainingMonitor
                 Console.WriteLine($"Activation mean: {Stats.Mean(layer.CachedOutput)}");
                 Console.WriteLine($"Activation var: {Stats.Variance(layer.CachedOutput)}");
 
-                if(layer is ReLU)
+                if(layer is ReLU || layer is LeakyReLU)
                 {
                     Console.WriteLine($"Zero ratio: {Stats.ZeroRatio(layer.CachedOutput) * 100}%");
                 }
@@ -55,8 +57,12 @@ static class TrainingMonitor
         }
     }
 
-    public static void CheckNumericalGrad(Sequential sequential, Matrix testcase, Matrix ans, int layerPos)
+    public static void CheckNumericalGrad(NeuralNetwork network, Matrix testcase, Matrix ans, int layerPos)
     {
+        Sequential sequential = network.Sequential;
+        Optimizer optimizer = network.Optimizer;
+
+
         if(layerPos < 0 || layerPos >= sequential.Layers.Count)
         {
             throw new ArgumentOutOfRangeException("Index layer out of bounds!");
@@ -74,26 +80,26 @@ static class TrainingMonitor
 
         foreach(Parameter parameter in layer.Parameters())
         {
-            sequential.ZeroGrad();
+            optimizer.ZeroGrad();
 
             Console.WriteLine();
             Console.WriteLine($"--- Gradient Check for {parameter.Name} ---");
 
             double originalWeight = parameter.Data[0,0];
-
-            sequential.Backward(sequential.Predict(testcase), ans);
+            Matrix yGrad = Loss.LossGrad(sequential.Forward(testcase), ans, network.ModelLoss);
+            sequential.Backward(yGrad);
 
             double analyticalGrad = parameter.Grad[0,0];
 
             parameter.Data[0,0] = originalWeight + Utility.e5Eps;
             
-            Matrix sample1 = sequential.Predict(testcase);
-            double sample1Loss = (Loss.CrossEntropyValue(sample1, ans) + Loss.L2Regularization(sequential)) * batchSize;
+            Matrix sample1 = sequential.Forward(testcase);
+            double sample1Loss = Loss.LossValue(sample1, ans, network.ModelLoss) * batchSize;
 
             parameter.Data[0,0] = originalWeight - Utility.e5Eps;
 
-            Matrix sample2 = sequential.Predict(testcase);
-            double sample2Loss = (Loss.CrossEntropyValue(sample2, ans) + Loss.L2Regularization(sequential)) * batchSize;
+            Matrix sample2 = sequential.Forward(testcase);
+            double sample2Loss = Loss.LossValue(sample2, ans, network.ModelLoss) * batchSize;
 
             double numericalGrad = (sample1Loss - sample2Loss) / (2 * Utility.e5Eps);
 

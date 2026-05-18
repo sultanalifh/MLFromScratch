@@ -1,10 +1,15 @@
 
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 class LayerNorm : Layer
-{
+{  
     private double _Epsilon = 1e-5;
+
+    [JsonInclude]
     public Parameter Gamma;
+
+    [JsonInclude]
     public Parameter Beta;
     public LayerNorm(int inputSize, int outputSize) : base(inputSize, outputSize)
     {

@@ -1,12 +1,18 @@
+using System.Text.Json.Serialization;
+
 abstract class Layer
 {
+    [JsonInclude]
     public int InputSize;
+
+    [JsonInclude]
     public int OutputSize;
 
     public Matrix CachedInput;
+
     public Matrix CachedOutput;
 
-    public const double Lambda = 0.001;
+    public double Lambda = 0;
 
     public Layer(int inputSize, int outputSize)
     {

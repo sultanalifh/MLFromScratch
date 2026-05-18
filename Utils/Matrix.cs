@@ -1,6 +1,11 @@
+using System.Text.Json.Serialization;
+
 class Matrix
 {
+    [JsonInclude]
     public int Rows;
+
+    [JsonInclude]
     public int Cols;
     private double[,] _Data;
 
@@ -13,6 +18,18 @@ class Matrix
         set
         {
             _Data[row, col] = value;
+        }
+    }
+
+    public double[,] Data
+    {
+        get
+        {
+            return _Data;
+        }
+        set
+        {
+            _Data = Data;
         }
     }
 
@@ -39,7 +56,7 @@ class Matrix
         Matrix Result = new Matrix(Rows, other.Cols);
 
         for(int i = 0; i < Rows; i++)
-        {
+        {   
             for(int j = 0; j < other.Cols; j++)
             {
                 double sum = 0; 

@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v10.0": {
       "MLFromScratch/1.0.0": {
         "dependencies": {
+          "JsonCore": "1.0.0",
           "System.Drawing.Common": "10.0.7"
         },
         "runtime": {
@@ -48,6 +49,14 @@
             "fileVersion": "10.0.726.21808"
           }
         }
+      },
+      "JsonCore/1.0.0": {
+        "runtime": {
+          "JsonCore.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
       }
     }
   },
@@ -70,6 +79,11 @@
       "sha512": "sha512-t0dLoUJOFMMyHqwpDuTKVlKVry92yUhf7qwihVT2MUrg3y/ZOHKpij5nb+jb20UT3vc7UlQWQlNmV9NQ5c7aSA==",
       "path": "system.drawing.common/10.0.7",
       "hashPath": "system.drawing.common.10.0.7.nupkg.sha512"
+    },
+    "JsonCore/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

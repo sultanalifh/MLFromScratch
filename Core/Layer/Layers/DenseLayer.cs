@@ -1,6 +1,11 @@
+using System.Text.Json.Serialization;
+
 class DenseLayer : Layer
 {
+    [JsonInclude]
     public Parameter Weights;
+
+    [JsonInclude]
     public Parameter Bias; 
     public DenseLayer(int inputSize, int outputSize) : base(inputSize, outputSize)
     {

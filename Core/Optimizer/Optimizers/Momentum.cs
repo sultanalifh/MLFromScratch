@@ -1,7 +1,11 @@
+using System.Text.Json.Serialization;
+
 class Momentum : Optimizer
 {
+    [JsonInclude]
     public List<Matrix> Velocities;
 
+    [JsonInclude]
     public double momentum;
     public Momentum(Sequential sequential, double learningRate, double momentum) : base(sequential, learningRate)
     {

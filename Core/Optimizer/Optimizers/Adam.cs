@@ -1,28 +1,33 @@
+using System.Text.Json.Serialization;
+
 class Adam : Optimizer
 {
+    [JsonInclude]
     public double Beta1, Beta2;
 
+    [JsonInclude]
     public double TBeta1, TBeta2;
+
+    [JsonInclude]
     public List<Matrix> Velocities;
+
+    [JsonInclude]
     public List<Matrix> Variances;
     public Adam(Sequential sequential, double learningRate, double beta1 = 0.9, double beta2 = 0.999) : base(sequential, learningRate)
     {
         Velocities = new List<Matrix>();
         Variances = new List<Matrix>();
 
-        foreach(Layer layer in sequential.Layers)
+        foreach(Parameter parameter in Parameters)
         {
-            foreach(Parameter parameter in layer.Parameters())
-            {
-                int paramRows = parameter.Data.Rows;
-                int paramCols = parameter.Data.Cols;
+            int paramRows = parameter.Data.Rows;
+            int paramCols = parameter.Data.Cols;
 
-                Matrix velocity = new Matrix(paramRows, paramCols);
-                Matrix variance = new Matrix(paramRows, paramCols);
+            Matrix velocity = new Matrix(paramRows, paramCols);
+            Matrix variance = new Matrix(paramRows, paramCols);
 
-                Velocities.Add(velocity);
-                Variances.Add(variance);
-            }
+            Velocities.Add(velocity);
+            Variances.Add(variance);
         }
 
         Beta1 = TBeta1 = beta1;

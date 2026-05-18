@@ -3,7 +3,7 @@ using System.Drawing.Imaging;
 
 static class DecisionBoundary
 {
-    public static void SaveSpiralDatasetBoundaryImage(Sequential model, string filename)
+    public static void SaveSpiralDatasetBoundaryImage(NeuralNetwork model, string filename)
     {
         int Width = 300;
         int Height = 300;

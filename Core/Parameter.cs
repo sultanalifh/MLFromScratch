@@ -1,7 +1,13 @@
+using System.Text.Json.Serialization;
+
 class Parameter
 {
+    [JsonInclude]
     public string Name;
+
+    [JsonInclude]
     public Matrix Data;
+
     public Matrix Grad;
 
     public Parameter(Matrix data, string name)

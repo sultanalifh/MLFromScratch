@@ -1,5 +1,57 @@
+enum ModelLoss
+{
+    None,
+    MSE,
+    BCE,
+    CE
+}
+
 static class Loss
 {
+
+    public static Matrix MeanSquarredErrorGrad(Matrix yPred, Matrix yTrue)
+    {
+        if(yPred.Rows != yTrue.Rows || yPred.Cols != yTrue.Cols)
+        {
+            throw new ArgumentException("Shape mismatch!");
+        }
+        else if(yPred.Cols != 1)
+        {
+            throw new ArgumentException("Invalid MSE loss computation for inputSize: " + yPred.Cols);
+        }
+
+        int batchSize = yPred.Rows;
+        Matrix result = new Matrix(batchSize, 1);
+
+        for(int i = 0; i < batchSize; i++)
+        {
+            result[i,0] = 2 * (yTrue[i,0] - yPred[i,0]);
+        }
+
+        return result;
+    }
+
+    public static double MeanSquarredErrorValue(Matrix yPred, Matrix yTrue)
+    {
+        if(yPred.Rows != yTrue.Rows || yPred.Cols != yTrue.Cols)
+        {
+            throw new ArgumentException("Shape mismatch!");
+        }
+        else if(yPred.Cols != 1)
+        {
+            throw new ArgumentException("Invalid MSE loss computation for inputSize: " + yPred.Cols);
+        }
+        
+        int batchSize = yPred.Rows;
+        double loss = 0;
+
+        for(int i = 0; i < batchSize; i++)
+        {
+            loss += (yTrue[i,0] - yPred[i,0]) * (yTrue[i,0] - yPred[i,0]);
+        }
+
+        return loss / batchSize;
+    }
     public static Matrix BinaryCrossEntropyGrad(Matrix yPred, Matrix yTrue)
     {
         if(yPred.Rows != yTrue.Rows)
@@ -90,7 +142,7 @@ static class Loss
         return loss / BatchSize;
     }
 
-    public static double L2Regularization(Sequential sequential)
+    public static double L2Regularization(Sequential sequential, double lambda)
     {
         double l2Loss = 0;
 
@@ -113,6 +165,22 @@ static class Loss
             }
         }
 
-        return l2Loss * 0.001;
+        return l2Loss * lambda;
     }
+
+    public static Matrix LossGrad(Matrix yPred, Matrix yTrue, ModelLoss loss) => loss switch
+    {
+        ModelLoss.MSE => MeanSquarredErrorGrad(yPred, yTrue),
+        ModelLoss.BCE => BinaryCrossEntropyGrad(yPred, yTrue),
+        ModelLoss.CE => CrossEntropyGrad(yPred, yTrue),
+        _ => new Matrix(yPred.Rows, yPred.Cols)
+    };
+
+    public static double LossValue(Matrix yPred, Matrix yTrue, ModelLoss loss) => loss switch
+    {
+        ModelLoss.MSE => MeanSquarredErrorValue(yPred, yTrue),
+        ModelLoss.BCE => BinaryCrossEntropyValue(yPred, yTrue),
+        ModelLoss.CE => CrossEntropyValue(yPred, yTrue),
+        _ => double.NaN,
+    };
 }

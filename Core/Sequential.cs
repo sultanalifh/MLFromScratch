@@ -1,5 +1,8 @@
+using System.Text.Json.Serialization;
+
 class Sequential
 {
+    [JsonInclude]
     public List<Layer> Layers;
 
     public Sequential()
@@ -7,22 +10,17 @@ class Sequential
         Layers = new List<Layer>();
     }
 
+    public Sequential(List<Layer> layers)
+    {
+        Layers = layers;
+    }
+
     public void Add(Layer layer)
     {
         Layers.Add(layer);
     }
-    public Matrix Backward(Matrix yPred, Matrix yTrue)
-    {
-        yPred = Loss.CrossEntropyGrad(yPred, yTrue);
 
-        for(int i = Layers.Count - 1; i >= 0; i--)
-        {
-            yPred = Layers[i].Backward(yPred);
-        }
-
-        return yPred;
-    }
-    public Matrix Predict(Matrix x)
+    public Matrix Forward(Matrix x)
     {
         for(int i = 0; i < Layers.Count; i++)
         {
@@ -31,6 +29,15 @@ class Sequential
 
         return x;
     }
+    public Matrix Backward(Matrix yPred)
+    {
+        for(int i = Layers.Count - 1; i >= 0; i--)
+        {
+            yPred = Layers[i].Backward(yPred);
+        }
+
+        return yPred;
+    }
     public IEnumerable<Parameter> Parameters()
     {
         foreach(Layer layer in Layers)
@@ -38,26 +45,6 @@ class Sequential
             foreach(Parameter param in layer.Parameters())
             {
                 yield return param;
-            }
-        }
-    }
-
-    public void ZeroGrad()
-    {
-        foreach(Layer layer in Layers)
-        {
-            foreach(Parameter parameter in layer.Parameters())
-            {
-                int paramRows = parameter.Grad.Rows;
-                int paramCols = parameter.Grad.Cols;
-
-                for(int i = 0; i < paramRows; i++)
-                {
-                    for(int j = 0; j < paramCols; j++)
-                    {
-                        parameter.Grad[i,j] = 0;
-                    }
-                }
             }
         }
     }
