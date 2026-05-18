@@ -5,18 +5,18 @@ class ML {
 
     static void Main()
     {
-        
-        ModelCheckpoint modelCheckpoint = ModelCheckpoint.Load("spiral_dataset.model");
-        NeuralNetwork network = modelCheckpoint.NeuralNetwork;
-        Sequential sequential = network.Sequential;
-        Optimizer optimizer = network.Optimizer;
 
-        modelCheckpoint.PrintStats();
+        // ModelCheckpoint modelCheckpoint = ModelCheckpoint.Load("spiral_dataset.model");
+        // NeuralNetwork network = modelCheckpoint.NeuralNetwork;
+        // Sequential sequential = network.Sequential;
+        // Optimizer optimizer = network.Optimizer;
 
-        SpiralDataset train = new SpiralDataset(3, 50);
-        SpiralDataset test = new SpiralDataset(3, 300);
+        // modelCheckpoint.PrintStats();
 
-        DecisionBoundary.SaveSpiralDatasetBoundaryImage(network, "spiral.jpeg");
+        // SpiralDataset train = new SpiralDataset(3, 50);
+        // SpiralDataset test = new SpiralDataset(3, 300);
+
+        // DecisionBoundary.SaveSpiralDatasetBoundaryImage(network, "spiral.jpeg");
 
         // for(int i = 0; i < 30000; i++)
         // {

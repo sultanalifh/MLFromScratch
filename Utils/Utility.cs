@@ -15,4 +15,5 @@ public static class Utility
     }
 
     public static int GCD(int a, int b) => b > a ? GCD(b,a) : a % b == 0 ? b : GCD(b, a%b);
+
 }
