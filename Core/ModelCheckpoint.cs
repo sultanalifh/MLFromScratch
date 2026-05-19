@@ -3,8 +3,8 @@ using Gestalt.JsonCore;
 
 class ModelCheckpoint
 {
-    [JsonInclude]
     public NeuralNetwork NeuralNetwork;
+
     [JsonInclude]
     public string ModelName;
     [JsonInclude]
@@ -15,6 +15,11 @@ class ModelCheckpoint
     public int CurrentEpoch;
     [JsonInclude]
     public int BestEpoch;
+
+    private ModelCheckpoint()
+    {
+        
+    }
 
     public void PrintStats()
     {
@@ -42,9 +47,14 @@ class ModelCheckpoint
         }
     }
 
-    public void Track() => ++CurrentEpoch;
+    public void Track()
+    {
+        CurrentEpoch++;
 
-    public void Save() => JsonCore.Serialize(this, FileName);
+        JsonCore.Serialize(this, $"{FileName}.stats");
+    }
+
+    public void Save() => JsonCore.Serialize(NeuralNetwork, $"{FileName}.model");
 
     public static ModelCheckpoint Load(string fileName)
     {
@@ -54,7 +64,7 @@ class ModelCheckpoint
         int bestEpoch = 0;
         string modelName = "";
 
-        if (!File.Exists(fileName))
+        if (!File.Exists($"{fileName}.model"))
         {
             Console.WriteLine("Model doesn't Exists!");
             Console.WriteLine("Creating new one...");
@@ -70,8 +80,8 @@ class ModelCheckpoint
             Console.WriteLine("Model found!");
             Console.WriteLine();
 
-            Dictionary<string, object> raw_checkpoint = (Dictionary<string, object>) JsonCore.Parse(fileName)["data"];
-            Dictionary<string, object> raw_network = (Dictionary<string, object>) raw_checkpoint["NeuralNetwork"];
+            Dictionary<string, object> raw_network = (Dictionary<string, object>) JsonCore.Parse($"{fileName}.model")["data"];
+            Dictionary<string, object> raw_checkpoint = (Dictionary<string, object>) JsonCore.Parse($"{fileName}.stats")["data"];
 
             network = ModelBuilder.Create().FromJson(raw_network);
             modelName = (string) raw_checkpoint["ModelName"];
@@ -94,29 +104,27 @@ class ModelCheckpoint
     public static NeuralNetwork Create()
     {
         NeuralNetwork baseNetwork = ModelBuilder.Create()
-            .Dense(2, 64, InitType.He)
-            .LayerNorm(64)
-            .LeakyReLU(64)
-            .Dropout(64, 0.05)
+            .Dense(784, 128, InitType.He)
+            .LayerNorm(128)
+            .LeakyReLU(128)
 
-            .Dense(64, 64, InitType.He)
-            .LayerNorm(64)
-            .LeakyReLU(64)
-            .Dropout(64, 0.05)
+            .Dense(128, 128, InitType.He)
+            .LayerNorm(128)
+            .LeakyReLU(128)
 
-            .Dense(64, 64, InitType.He)
-            .LayerNorm(64)
-            .LeakyReLU(64)
+            .Dense(128, 128, InitType.He)
+            .LayerNorm(128)
+            .LeakyReLU(128)
 
-            .Dense(64, 3, InitType.Xavier)
-            .Softmax(3)
+            .Dense(128, 10, InitType.Xavier)
+            .Softmax(10)
             .Build();
 
 
-        Optimizer optimizer = baseNetwork.AdamOptimizer(0.003);
+        Optimizer optimizer = baseNetwork.AdamOptimizer(0.001);
         Sequential sequential = baseNetwork.Sequential;
         baseNetwork.ModelLoss = ModelLoss.CE;
-        baseNetwork.Lambda = 0.0005;
+        // baseNetwork.Lambda = 0.0005;
 
         return baseNetwork;
     }

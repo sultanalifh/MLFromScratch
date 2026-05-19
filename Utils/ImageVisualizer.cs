@@ -8,17 +8,16 @@ static class ImageVisualizer
         {
             if(i % width == 0) Console.WriteLine();
 
-            char stroke;
-            
-            if((percentage && pixels[i] * 255 < 50) || pixels[i] < 50)
-                stroke = '.';
-            else if((percentage && pixels[i] * 255 < 100) || pixels[i] < 100)
-                stroke = '-';
-            else if((percentage && pixels[i] * 255 < 150) || pixels[i] < 150)
-                stroke = '*';
-            else if((percentage && pixels[i] * 255 < 200) || pixels[i] < 200)
-                stroke = 'O';
-            else stroke = '#';
+            double pixel = percentage ? pixels[i] * 255 : pixels[i];
+
+            char stroke = pixel switch
+            {
+                < 50 => '.',
+                < 100 => '-',
+                < 150 => '*',
+                < 200 => 'O',
+                _ => '#'
+            };
 
             Console.Write(stroke);
         }
@@ -32,7 +31,7 @@ static class ImageVisualizer
 
         for(int i = 0; i < n; i++)
         {
-            result[i] = result[i] / 255.0;
+            result[i] = image[i] / 255.0;
         }
 
         return result;

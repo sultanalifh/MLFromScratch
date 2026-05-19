@@ -1,6 +1,6 @@
 enum IDXObject
 {
-    uByte,
+    uByte = 0,
     sByte,
     Short,
     Int,
@@ -10,7 +10,7 @@ enum IDXObject
 
 static class IDXParser
 {
-    public static object Parse(string fileName)
+    public static object Parse(string fileName, List<int> limiter)
     {
         using Stream stream = File.OpenRead(fileName);
 
@@ -21,9 +21,14 @@ static class IDXParser
         byte objectByte = magic[2];
         byte numberOfDimension = magic[3];
 
-        IDXObject Object = GetObject(objectByte);
+        IDXObject idxObject = GetObject(objectByte);
 
         List<int> dimensions = new List<int>();
+
+        if(limiter == null)
+        {
+            limiter = new List<int>();
+        }
 
         for(int i = 0; i < numberOfDimension; i++)
         {
@@ -34,31 +39,36 @@ static class IDXParser
             int dimension = BitConverter.ToInt32(bytes);
 
             dimensions.Add(dimension);
+
+            if(limiter.Count == i)
+            {
+                limiter.Add(dimension);
+            }
         }
         
-        object result = RecurseDimension(binaryReader, Object, dimensions);
+        object result = RecurseDimension(binaryReader, idxObject, dimensions, limiter);
 
         return result;
     }
 
-    private static object RecurseDimension(BinaryReader reader, IDXObject Object, List<int> dimensions, int idx = 0)
+    private static object RecurseDimension(BinaryReader reader, IDXObject idxObject, List<int> dimensions, List<int> limiter, int idx = 0)
     {
         int numberOfDimension = dimensions.Count;
 
         if(idx >= numberOfDimension)
         {
-            byte[] data = ReadByte(reader, Object);
+            byte[] data = ReadByte(reader, idxObject);
 
-            return ParseByte(data, Object);
+            return ParseByte(data, idxObject);
         }
 
-        int dimensionSize = dimensions[idx];
+        int dimensionSize = Math.Min(limiter[idx], dimensions[idx]);
 
         List<object> result = new List<object>();
 
         for(int i = 0; i < dimensionSize; i++)
         {
-            object child = RecurseDimension(reader, Object, dimensions, idx + 1);
+            object child = RecurseDimension(reader, idxObject, dimensions, limiter, idx + 1);
             
             result.Add(child);
         }
@@ -77,7 +87,7 @@ static class IDXParser
         _ => throw new ArgumentException("Invalid object")
     };
 
-    public static byte[] ReadByte(BinaryReader reader, IDXObject Object) => Object switch
+    public static byte[] ReadByte(BinaryReader reader, IDXObject idxObject) => idxObject switch
     {
         IDXObject.uByte => reader.ReadBytes(1),
         IDXObject.sByte => reader.ReadBytes(1),
@@ -88,21 +98,21 @@ static class IDXParser
         _ => throw new ArgumentException("No object specified!")
     };
 
-    public static dynamic ParseByte(byte[] bytes, IDXObject Object) 
+    public static object ParseByte(byte[] bytes, IDXObject idxObject) 
     {
         if(BitConverter.IsLittleEndian && bytes.Length > 1)
         {
             Array.Reverse(bytes);
         }
 
-        return Object switch
+        return idxObject switch
         {  
-            IDXObject.uByte => bytes[0],
-            IDXObject.sByte => (sbyte) bytes[0],
-            IDXObject.Short => BitConverter.ToInt16(bytes),
-            IDXObject.Int => BitConverter.ToInt32(bytes),
-            IDXObject.Float => BitConverter.ToSingle(bytes),
-            IDXObject.Double => BitConverter.ToDouble(bytes),
+            IDXObject.uByte     => (object) bytes[0],
+            IDXObject.sByte     => (object) (sbyte) bytes[0],
+            IDXObject.Short     => (object) BitConverter.ToInt16(bytes),
+            IDXObject.Int       => (object) BitConverter.ToInt32(bytes),
+            IDXObject.Float     => (object) BitConverter.ToSingle(bytes),
+            IDXObject.Double    => (object) BitConverter.ToDouble(bytes),
             _ => throw new ArgumentException("No object specified!")
         };
     }

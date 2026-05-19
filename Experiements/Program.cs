@@ -5,35 +5,51 @@ class ML {
 
     static void Main()
     {
+        int trainSample = 5000;
+        int testSample = 1000;
 
-        // ModelCheckpoint modelCheckpoint = ModelCheckpoint.Load("spiral_dataset.model");
-        // NeuralNetwork network = modelCheckpoint.NeuralNetwork;
-        // Sequential sequential = network.Sequential;
-        // Optimizer optimizer = network.Optimizer;
+        ModelCheckpoint modelCheckpoint = ModelCheckpoint.Load("mnist_784_128_128");
+        NeuralNetwork network = modelCheckpoint.NeuralNetwork;
+        Sequential sequential = network.Sequential;
+        Optimizer optimizer = network.Optimizer;
 
-        // modelCheckpoint.PrintStats();
+        MNISTDataset train = MNISTLoader.Load("train", trainSample);
+        MNISTDataset test = MNISTLoader.Load("t10k", testSample);
 
-        // SpiralDataset train = new SpiralDataset(3, 50);
-        // SpiralDataset test = new SpiralDataset(3, 300);
+        var trainBatch = new Batch<MNISTSample>(train.Samples, trainSample);
+        var testBatch = new Batch<MNISTSample>(test.Samples, testSample);
 
-        // DecisionBoundary.SaveSpiralDatasetBoundaryImage(network, "spiral.jpeg");
+        modelCheckpoint.PrintStats();
 
-        // for(int i = 0; i < 30000; i++)
-        // {
-        //     network.Fit(train.X, train.Y);
-        //     modelCheckpoint.Track();
+        for(int i = 0; i < 10; i++)
+        {
+            int currentEpoch = modelCheckpoint.CurrentEpoch;
 
-        //     if((i + 1) % 50 == 0)
-        //     {
-        //         test.Generate();
+            train.Shuffle();
 
-        //         Matrix yPred = network.Predict(test.X);
-        //         double loss = Loss.LossValue(yPred, test.Y, network.ModelLoss);
-        //         modelCheckpoint.Track(loss);
+            while (train.HasNextBatch)
+            {
+                var miniBatch = train.GetBatch(32);
+                
+                network.Fit(miniBatch.X, miniBatch.Y);
+            }
 
-        //         train.Generate();
-        //     }
-        // }
+            Matrix testPred = sequential.Forward(testBatch.X);
+            Matrix trainPred = sequential.Forward(trainBatch.X);
 
+            double trainLoss = Loss.LossValue(trainPred, trainBatch.Y, network.ModelLoss);
+            double testLoss = Loss.LossValue(testPred, testBatch.Y, network.ModelLoss);
+            
+            double trainAcc = Metrics.MultiClassificationAccuracy(trainPred, trainBatch.Y) * 100;
+            double testAcc = Metrics.MultiClassificationAccuracy(testPred, testBatch.Y) * 100;
+            
+            sequential.Backward(Loss.LossGrad(trainPred, trainBatch.Y, network.ModelLoss));
+
+            TrainingMonitor.LogEpoch(modelCheckpoint.CurrentEpoch, trainLoss, testLoss, trainAcc, testAcc, network);
+            
+            modelCheckpoint.Track(testLoss);
+
+            modelCheckpoint.Track();
+        }
     }
 }

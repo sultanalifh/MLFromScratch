@@ -1,9 +1,10 @@
 static class TrainingMonitor
 {
-    public static void LogEpoch(int epoch, double loss, double trainAcc, double testAcc, NeuralNetwork network)
+    public static void LogEpoch(int epoch, double trainLoss, double testLoss, double trainAcc, double testAcc, NeuralNetwork network)
     {
         Console.WriteLine($"--- Epoch {epoch} ---");
-        Console.WriteLine($"Loss: {loss}");
+        Console.WriteLine($"Train Loss: {trainLoss}");
+        Console.WriteLine($"Test Loss: {testLoss}");
         Console.WriteLine($"Train Accuracy: {trainAcc}%");
         Console.WriteLine($"Test Accuracy: {testAcc}%");
         Console.WriteLine();
