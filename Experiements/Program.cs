@@ -5,8 +5,8 @@ class ML {
 
     static void Main()
     {
-        int trainSample = 5000;
-        int testSample = 1000;
+        int trainSample = 10000;
+        int testSample = 2000;
 
         ModelCheckpoint modelCheckpoint = ModelCheckpoint.Load("mnist_784_128_128");
         NeuralNetwork network = modelCheckpoint.NeuralNetwork;
@@ -16,12 +16,13 @@ class ML {
         MNISTDataset train = MNISTLoader.Load("train", trainSample);
         MNISTDataset test = MNISTLoader.Load("t10k", testSample);
 
+
         var trainBatch = new Batch<MNISTSample>(train.Samples, trainSample);
         var testBatch = new Batch<MNISTSample>(test.Samples, testSample);
 
         modelCheckpoint.PrintStats();
 
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < 300; i++)
         {
             int currentEpoch = modelCheckpoint.CurrentEpoch;
 
@@ -45,7 +46,7 @@ class ML {
             
             sequential.Backward(Loss.LossGrad(trainPred, trainBatch.Y, network.ModelLoss));
 
-            TrainingMonitor.LogEpoch(modelCheckpoint.CurrentEpoch, trainLoss, testLoss, trainAcc, testAcc, network);
+            TrainingMonitor.LogEpoch(currentEpoch, trainLoss, testLoss, trainAcc, testAcc, network);
             
             modelCheckpoint.Track(testLoss);
 
