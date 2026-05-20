@@ -1,59 +1,54 @@
-
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
-
 class LayerNorm : Layer
-{  
-    private double _Epsilon = 1e-5;
-
-    [JsonInclude]
+{
     public Parameter Gamma;
-
-    [JsonInclude]
     public Parameter Beta;
+
+
     public LayerNorm(int inputSize, int outputSize) : base(inputSize, outputSize)
     {
-        Gamma = new Parameter(1, inputSize, "Gamma");
-        Beta = new Parameter(1, inputSize, "Beta");
+        Gamma = new Parameter("Gamma", outputSize, 1);
+        Beta = new Parameter("Beta", outputSize, 1);
 
-        for(int i = 0; i < InputSize; i++)
-        {
-            Gamma.Data[0,i] = 1;
-        }
-
-        CachedInput = new Matrix(outputSize, inputSize);
-        CachedOutput = new Matrix(outputSize, inputSize);
     }
-    public override Matrix Forward(Matrix x)
+    public override Tensor Forward(Tensor x)
     {
         CachedInput = x.Clone();
 
-        int BatchSize = x.Rows;
+        int batchSize = x.Shape[0];
 
-        Matrix output = new Matrix(BatchSize, OutputSize);
+        Tensor output = new Tensor(batchSize, InputSize);
 
-        for(int i = 0; i < BatchSize; i++)
+        for(int i = 0; i < batchSize; i++)
         {
-            double Mean = x.RowSum(i) / InputSize;
-
-            double Variance = 0;
+            double mean = 0;
 
             for(int j = 0; j < InputSize; j++)
             {
-                Variance += (x[i,j] - Mean) * (x[i,j] - Mean);
+                mean += x[i,j];
             }
 
-            Variance /= InputSize;
+            mean /= InputSize;
 
-            double std = Math.Sqrt(Variance + _Epsilon);
+            double variances = 0;
 
             for(int j = 0; j < InputSize; j++)
             {
-                double x_norm = (x[i,j] - Mean) / std;
+                variances += (x[i,j] - mean) * (x[i,j] - mean);
+            }
 
-                double x_normalized = Gamma.Data[0,j] * x_norm + Beta.Data[0,j];
 
-                output[i,j] = x_normalized;
+            // 1/2 * x^-1/2
+            // 1/2std
+            variances /= InputSize;
+
+            double std = Math.Sqrt(variances + Utility.e5Eps);
+
+            for(int j = 0; j < InputSize; j++)
+            {
+                double x_hat = (x[i,j] - mean) / std;
+                double x_norm = Gamma.Data[i,0] * x_hat + Beta.Data[i,0];
+
+                output[i,j] = x_norm;
             }
         }
 
@@ -61,64 +56,10 @@ class LayerNorm : Layer
 
         return output;
     }
-    public override Matrix Backward(Matrix x)
+
+    public override Tensor Backward(Tensor x)
     {
-        int BatchSize = x.Rows;
-
-        Matrix gradInput = new Matrix(BatchSize, InputSize);
-
-        for(int i = 0; i < BatchSize; i++)
-        {
-            double[] xhat = new double[InputSize];
-            double[] gradXhat = new double[InputSize];
-
-            double dXhatXhat = 0;
-            double dXhat = 0;
-
-            double mean = CachedInput.RowSum(i) / InputSize;
-
-            double variance = 0;
-
-            for(int j = 0; j < InputSize; j++)
-                variance += (CachedInput[i,j] - mean) * (CachedInput[i,j] - mean);
-
-            variance /= InputSize;
-
-            double std = Math.Sqrt(variance + _Epsilon);
-
-            for(int j = 0; j < InputSize; j++)
-            {
-                double x_norm = (CachedInput[i,j] - mean) / std;
-                double dyi_dxnorm = x[i,j] * Gamma.Data[0,j];
-                gradXhat[j] = dyi_dxnorm;
-                xhat[j] = x_norm;
-                dXhat += dyi_dxnorm;
-                dXhatXhat += dyi_dxnorm * x_norm;
-
-                Gamma.Grad[0,j] += x[i,j] * x_norm;
-                Beta.Grad[0,j] += x[i,j];
-            }
-
-            dXhat /= InputSize;
-            dXhatXhat /= InputSize;
-
-            for(int j = 0; j < InputSize; j++)
-            {
-                gradInput[i,j] = (gradXhat[j] - dXhat - xhat[j] * dXhatXhat) / std;
-            }
-        }
-
-        return gradInput;
-    }
-    public override void Step(double learningRate)
-    {
-        for(int i = 0; i < InputSize; i++)
-        {
-            Gamma.Data[0,i] -= Gamma.Grad[0,i] * learningRate;
-            Beta.Data[0,i] -= Beta.Grad[0,i] * learningRate;
-
-            Gamma.Grad[0,i] = Beta.Grad[0,i] = 0;
-        }
+        
     }
 
     public override IEnumerable<Parameter> Parameters()
