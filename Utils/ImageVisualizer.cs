@@ -1,14 +1,12 @@
 static class ImageVisualizer
 {
-    public static string Print(double[] pixels, int width, bool percentage = false)
+    public static void Print(double[] pixels, int width, bool percentage = false)
     {
         int n = pixels.Length;
 
-        string result = "";
-
         for(int i = 0; i < n; i++)
         {
-            if(i % width == 0) result += '\n';
+            if(i % width == 0) Console.WriteLine();
 
             double pixel = percentage ? pixels[i] * 255 : pixels[i];
 
@@ -21,14 +19,10 @@ static class ImageVisualizer
                 _ => '#'
             };
 
-            result += stroke;
-            // Console.Write(stroke);
+            Console.Write(stroke);
         }
         
-        result += '\n';
-        // Console.WriteLine();
-
-        return result;
+        Console.WriteLine();
     }
 
     public static double[] normalize(double[] image)
