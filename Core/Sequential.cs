@@ -20,7 +20,7 @@ class Sequential
         Layers.Add(layer);
     }
 
-    public Matrix Forward(Matrix x)
+    public Tensor Forward(Tensor x)
     {
         for(int i = 0; i < Layers.Count; i++)
         {
@@ -29,7 +29,7 @@ class Sequential
 
         return x;
     }
-    public Matrix Backward(Matrix yPred)
+    public Tensor Backward(Tensor yPred)
     {
         for(int i = Layers.Count - 1; i >= 0; i--)
         {

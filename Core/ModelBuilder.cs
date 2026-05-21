@@ -72,11 +72,11 @@ class ModelBuilder
             case "Momentum":
                 List<object> raw_momentum_velocities = (List<object>) obj["Velocities"];
 
-                List<Matrix> momentum_velocities = new List<Matrix>();
+                List<Tensor> momentum_velocities = new List<Tensor>();
 
                 foreach(Dictionary<string, object> raw_velocity in raw_momentum_velocities)
                 {
-                    momentum_velocities.Add(GetMatrix(raw_velocity));
+                    momentum_velocities.Add(GetTensor(raw_velocity));
                 }
 
                 double momentum_value = (double) obj["momentum"];
@@ -99,17 +99,17 @@ class ModelBuilder
                 double Tbeta1 = (double) obj["TBeta1"];
                 double Tbeta2 = (double) obj["TBeta2"];
 
-                List<Matrix> adam_velocities = new List<Matrix>();
-                List<Matrix> variances = new List<Matrix>();         
+                List<Tensor> adam_velocities = new List<Tensor>();
+                List<Tensor> variances = new List<Tensor>();         
 
                 foreach(Dictionary<string, object> raw_velocity in raw_adam_velocities)
                 {
-                    adam_velocities.Add(GetMatrix(raw_velocity));
+                    adam_velocities.Add(GetTensor(raw_velocity));
                 }       
 
                 foreach(Dictionary<string, object> raw_variance in raw_variances)
                 {
-                    variances.Add(GetMatrix(raw_variance));
+                    variances.Add(GetTensor(raw_variance));
                 }
 
                 Adam adam = new Adam(sequential, learningRate, beta1, beta2)
@@ -249,15 +249,58 @@ class ModelBuilder
 
     private Parameter GetParameter(Dictionary<string, object> obj)
     {
-        Dictionary<string, object> raw_matrix = (Dictionary<string, object>) obj["Data"];
+        Dictionary<string, object> raw_tensor = (Dictionary<string, object>) obj["Data"];
 
         string parameterName = (string) obj["Name"];
 
-        Matrix matrix = GetMatrix(raw_matrix);
+        Tensor tensor = GetTensor(raw_tensor);
 
-        Parameter parameter = new Parameter(matrix, parameterName);
+        Parameter parameter = new Parameter(parameterName, tensor);
 
         return parameter;
+    }
+
+    private Tensor GetTensor(Dictionary<string, object> obj)
+    {
+        string tensorType = (string) obj["type"];
+
+        Tensor tensor = tensorType switch
+        {
+            "Tensor" => GetDefaultTensor(obj),
+            "Matrix" => GetMatrix(obj),
+            _ => throw new ArgumentException("No such Tensor type exists!"),
+        };
+
+        return tensor;
+    }
+
+    private Tensor GetDefaultTensor(Dictionary<string, object> obj)
+    {
+        List<object> tensorShape = (List<object>) obj["Shape"];
+        List<object> tensorData = (List<object>) obj["Data"];
+
+        int shapeCount = tensorShape.Count;
+        int dataSize = tensorData.Count;
+
+        int[] shape = new int[shapeCount];
+        double[] data = new double[dataSize];
+
+        for(int i = 0; i < shapeCount; i++)
+        {
+            shape[i] = Convert.ToInt32(tensorShape[i]);
+        }
+
+        for(int i = 0; i < dataSize; i++)
+        {
+            data[i] = (double) tensorData[i];
+        }
+
+        Tensor tensor = new Tensor(shape)
+        {
+            Data = data
+        };
+
+        return tensor;
     }
 
     private Matrix GetMatrix(Dictionary<string, object> obj)
@@ -377,8 +420,9 @@ class ModelBuilder
 
     private void Initialize(InitType init, Parameter param)
     {
-        int inputSize = param.Data.Cols;
-        int outputSize = param.Data.Rows;
+        double[] data = param.Data.Data;
+        int[] shape = param.Data.Shape;
+        int inputSize = shape[shape.Length - 1];
 
         double std = init switch
         {
@@ -387,12 +431,9 @@ class ModelBuilder
             _ => 0.01,
         };
 
-        for(int i = 0; i < outputSize; i++)
+        for(int i = 0; i < data.Length; i++)
         {
-            for(int j = 0; j < inputSize; j++)
-            {
-                param.Data[i,j] = Utility.RandomNormal() * std;
-            }
+            data[i] = Utility.RandomNormal() * std;
         }
     }
 }

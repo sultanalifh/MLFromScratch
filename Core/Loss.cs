@@ -8,179 +8,208 @@ enum ModelLoss
 
 static class Loss
 {
-
-    public static Matrix MeanSquarredErrorGrad(Matrix yPred, Matrix yTrue)
+    public static double MeanSquarredErrorValue(Tensor yPred, Tensor yTrue)
     {
-        if(yPred.Rows != yTrue.Rows || yPred.Cols != yTrue.Cols)
+        if (!yPred.ShapeMatch(yTrue))
         {
-            throw new ArgumentException("Shape mismatch!");
-        }
-        else if(yPred.Cols != 1)
-        {
-            throw new ArgumentException("Invalid MSE loss computation for inputSize: " + yPred.Cols);
-        }
-
-        int batchSize = yPred.Rows;
-        Matrix result = new Matrix(batchSize, 1);
-
-        for(int i = 0; i < batchSize; i++)
-        {
-            result[i,0] = 2 * (yTrue[i,0] - yPred[i,0]);
-        }
-
-        return result;
-    }
-
-    public static double MeanSquarredErrorValue(Matrix yPred, Matrix yTrue)
-    {
-        if(yPred.Rows != yTrue.Rows || yPred.Cols != yTrue.Cols)
-        {
-            throw new ArgumentException("Shape mismatch!");
-        }
-        else if(yPred.Cols != 1)
-        {
-            throw new ArgumentException("Invalid MSE loss computation for inputSize: " + yPred.Cols);
+            throw new ArgumentException("Shape was not match!");
         }
         
-        int batchSize = yPred.Rows;
+        int[] predShape = yPred.Shape;
+
+        if(predShape.Length != 2)
+        {
+            throw new ArgumentException("Cannot compute loss for non-matrices Tensor!");
+        }
+
+        int batchSize = predShape[0];
+        int numClass = predShape[1];
+
         double loss = 0;
 
         for(int i = 0; i < batchSize; i++)
         {
-            loss += (yTrue[i,0] - yPred[i,0]) * (yTrue[i,0] - yPred[i,0]);
-        }
-
-        return loss / batchSize;
-    }
-    public static Matrix BinaryCrossEntropyGrad(Matrix yPred, Matrix yTrue)
-    {
-        if(yPred.Rows != yTrue.Rows)
-        {
-            throw new ArgumentException("Number of predictions was not the same!");
-        }
-
-        int BatchSize = yPred.Rows;
-
-        Matrix Result = new Matrix(BatchSize, 1);
-
-        for(int i = 0; i < BatchSize; i++)
-        {
-            Result[i,0] = -(yTrue[i,0] - yPred[i,0]) / ((1 - yPred[i,0]) * yPred[i,0]);
-        }
-        
-        return Result;
-    }
-
-    public static double BinaryCrossEntropyValue(Matrix yPred, Matrix yTrue)
-    {
-        if(yPred.Rows != yTrue.Rows)
-        {
-            throw new ArgumentException("Number of Batch is not the same!");
-        }
-
-        int BatchSize = yPred.Rows;
-
-        double Loss = 0;
-        double eps = 1e-12;
-
-        for(int i = 0; i < BatchSize; i++)
-        {
-            double p = Math.Clamp(yPred[i,0], eps, 1 - eps);
-            double y = yTrue[i,0];
-
-            Loss += -(y * Math.Log(p) + (1 - y) * Math.Log(1 - p));
-        }
-
-        return Loss;
-    }
-
-    public static Matrix CrossEntropyGrad(Matrix yPred, Matrix yTrue)
-    {
-        if(yPred.Rows != yTrue.Rows || yPred.Cols != yTrue.Cols)
-        {
-            throw new ArgumentException("Shape mismatch");
-        }
-
-        int BatchSize = yPred.Rows;
-        int numClass = yPred.Cols;
-
-        Matrix Result = new Matrix(BatchSize, numClass);
-
-        for(int i = 0; i < BatchSize; i++)
-        {
             for(int j = 0; j < numClass; j++)
             {
-                double p = Math.Max(yPred[i,j], Utility.e12Eps);
-                Result[i,j] = -yTrue[i,j] / p;
+                loss += (yTrue[i,j] - yPred[i,j]) * (yTrue[i,j] - yPred[i,j]);
             }
         }
 
-        return Result;
+        loss /= batchSize;
+
+        return loss;
     }
 
-    public static double CrossEntropyValue(Matrix yPred, Matrix yTrue)
+    public static Tensor MeanSquarredErrorGrad(Tensor yPred, Tensor yTrue)
     {
-        if(yPred.Rows != yTrue.Rows || yPred.Cols != yTrue.Cols)
+        if (!yPred.ShapeMatch(yTrue))
         {
-            throw new ArgumentException("Shape mismatch!");
+            throw new ArgumentException("Shape was not match!");
         }
 
-        int BatchSize = yPred.Rows;
-        int numClass = yPred.Cols;
+        int[] predShape = yPred.Shape;
+
+        if(predShape.Length != 2)
+        {
+            throw new ArgumentException("Cannot compute loss for non-matrices Tensor!");
+        }
+
+        int batchSize = predShape[0];
+        int numClass = predShape[1];
+
+        Tensor lossGrad = new Tensor(batchSize, numClass);
+
+        for(int i = 0; i < batchSize; i++)
+        {
+            for(int j = 0; j < numClass; j++)
+            {
+                lossGrad[i,j] += 2 * (yPred[i,j] - yTrue[i,j]);
+            }
+        }
+
+        return lossGrad;
+    }
+
+    public static double BinaryCrossEntropyValue(Tensor yPred, Tensor yTrue)
+    {
+        if (!yPred.ShapeMatch(yTrue))
+        {
+            throw new ArgumentException("Shape was not match!");
+        }
+
+        int[] predShape = yPred.Shape;
+
+        if(predShape.Length != 2)
+        {
+            throw new ArgumentException("Cannot compute loss for non-matrices Tensor!");
+        }
+
+        int batchSize = predShape[0];
+        int numClass = predShape[1];
 
         double loss = 0;
 
-        for(int i = 0; i < BatchSize; i++)
+        for(int i = 0; i < batchSize; i++)
+        {
+            for(int j = 0; j < numClass; j++)
+            {
+                loss += -(yTrue[i,j]*Math.Log(yPred[i,j]) + (1 - yTrue[i,j])*Math.Log(1 - yPred[i,j]));
+            }
+        }
+
+        loss /= batchSize;
+
+        return loss;
+    }
+    
+    public static Tensor BinaryCrossEntropyGrad(Tensor yPred, Tensor yTrue)
+    {
+        if (!yPred.ShapeMatch(yTrue))
+        {
+            throw new ArgumentException("Shape was not match!");
+        }
+
+        int[] predShape = yPred.Shape;
+
+        if(predShape.Length != 2)
+        {
+            throw new ArgumentException("Cannot compute loss for non-matrices Tensor");
+        }
+
+        int batchSize = predShape[0];
+        int numClass = predShape[1];
+
+        Tensor lossGrad = new Tensor(batchSize, numClass);
+
+        for(int i = 0; i < batchSize; i++)
+        {
+            for(int j = 0; j < numClass; j++)
+            {
+                lossGrad[i,j] = -(yTrue[i,j] - yPred[i,j]) / ((1 - yPred[i,j]) * yPred[i,j]);
+            }
+        }
+
+        return lossGrad;
+    }
+    
+    public static double CrossEntropyValue(Tensor yPred, Tensor yTrue)
+    {
+        if (!yPred.ShapeMatch(yTrue))
+        {
+            throw new ArgumentException("Shape was not match!");
+        }
+
+        int[] predShape = yPred.Shape;
+
+        if(predShape.Length != 2)
+        {
+            throw new ArgumentException("Cannot compute loss for non-matrices Tensor!");
+        }
+
+        int batchSize = predShape[0];
+        int numClass = predShape[1];
+
+        double loss = 0;
+
+        for(int i = 0; i < batchSize; i++)
         {
             for(int j = 0; j < numClass; j++)
             {
                 double p = Math.Max(yPred[i,j], Utility.e12Eps);
-                loss += -yTrue[i,j]*Math.Log(p);
+                loss += -yTrue[i,j] * Math.Log(p);
             }
         }
 
-        return loss / BatchSize;
+        loss /= batchSize;
+
+        return loss;
     }
 
-    public static double L2Regularization(Sequential sequential, double lambda)
+    public static Tensor CrossEntropyGrad(Tensor yPred, Tensor yTrue)
     {
-        double l2Loss = 0;
-
-        foreach(Layer layer in sequential.Layers)
+        if (!yPred.ShapeMatch(yTrue))
         {
-            foreach(Parameter parameter in layer.Parameters())
+            throw new ArgumentException("Shape was not match!");
+        }
+
+        int[] predShape = yPred.Shape;
+
+        if(predShape.Length != 2)
+        {
+            throw new ArgumentException("Cannot compute loss for non-matrices Tensor!");
+        }
+
+        int batchSize = predShape[0];
+        int numClass = predShape[1];
+
+        Tensor lossGrad = new Tensor(batchSize, numClass);
+
+        for(int i = 0; i < batchSize; i++)
+        {
+            for(int j = 0; j < numClass; j++)
             {
-                if(parameter.Name != "Weight") continue;
-
-                int weightRows = parameter.Data.Rows;
-                int weightCols = parameter.Data.Cols;
-
-                for(int i = 0; i < weightRows; i++)
-                {
-                    for(int j = 0; j < weightCols; j++)
-                    {
-                        l2Loss += parameter.Data[i,j] * parameter.Data[i,j];
-                    }
-                }
+                double p = Math.Max(yPred[i,j], Utility.e12Eps);
+                lossGrad[i,j] += -yTrue[i,j] / p;
             }
         }
 
-        return l2Loss * lambda;
+        return lossGrad;
     }
 
-    public static Matrix LossGrad(Matrix yPred, Matrix yTrue, ModelLoss loss) => loss switch
-    {
-        ModelLoss.MSE => MeanSquarredErrorGrad(yPred, yTrue),
-        ModelLoss.BCE => BinaryCrossEntropyGrad(yPred, yTrue),
-        ModelLoss.CE => CrossEntropyGrad(yPred, yTrue),
-        _ => new Matrix(yPred.Rows, yPred.Cols)
-    };
-
-    public static double LossValue(Matrix yPred, Matrix yTrue, ModelLoss loss) => loss switch
+    public static double LossValue(Tensor yPred, Tensor yTrue, ModelLoss lossType) => lossType switch
     {
         ModelLoss.MSE => MeanSquarredErrorValue(yPred, yTrue),
         ModelLoss.BCE => BinaryCrossEntropyValue(yPred, yTrue),
         ModelLoss.CE => CrossEntropyValue(yPred, yTrue),
-        _ => double.NaN,
+        _ => throw new ArgumentException("No such loss type found!")
     };
+
+    public static Tensor LossGrad(Tensor yPred, Tensor yTrue, ModelLoss lossType) => lossType switch
+    {
+        ModelLoss.MSE => MeanSquarredErrorGrad(yPred, yTrue),
+        ModelLoss.BCE => BinaryCrossEntropyGrad(yPred, yTrue),
+        ModelLoss.CE => CrossEntropyGrad(yPred, yTrue),
+        _ => throw new ArgumentException("No such loss type found!")
+    };
+
 }

@@ -1,5 +1,8 @@
+using System.Text.Json.Serialization;
+
 class Dropout : Layer
 {
+    [JsonInclude]
     public double DropoutRate;
 
     public Tensor Mask;

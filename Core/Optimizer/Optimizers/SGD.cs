@@ -2,22 +2,20 @@ class SGD : Optimizer
 {
     public SGD(Sequential sequential, double learningRate) : base(sequential, learningRate)
     {
-        
     }
 
     public override void Step()
     {
         foreach(Parameter parameter in Parameters)
         {
-            int ParamRows = parameter.Data.Rows;
-            int ParamCols = parameter.Data.Cols;
+            double[] data = parameter.Data.Data;
+            double[] grad = parameter.Grad.Data;
 
-            for(int i = 0; i < ParamRows; i++)
+            int dataSize = data.Length;
+
+            for(int i = 0; i < dataSize; i++)
             {
-                for(int j = 0; j < ParamCols; j++)
-                {
-                    parameter.Data[i,j] -= parameter.Grad[i,j] * LearningRate;
-                }
+                data[i] -= grad[i] * LearningRate;
             }
         }
     }
@@ -26,15 +24,14 @@ class SGD : Optimizer
     {
         foreach(Parameter parameter in Parameters)
         {
-            int ParamRows = parameter.Data.Rows;
-            int ParamCols = parameter.Data.Cols;
+            Tensor grad = parameter.Grad;
 
-            for(int i = 0; i < ParamRows; i++)
+            double[] data = grad.Data;
+            int length = data.Length;
+
+            for(int i = 0; i < length; i++)
             {
-                for(int j = 0; j < ParamCols; j++)
-                {
-                    parameter.Grad[i,j] = 0;
-                }
+                data[i] = 0;
             }
         }
     }

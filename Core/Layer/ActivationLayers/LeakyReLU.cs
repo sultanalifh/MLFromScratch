@@ -20,7 +20,7 @@ class LeakyReLU : ActivationLayer
             }
         }
 
-        CachedOutput = x.Clone();
+        CachedOutput = output.Clone();
 
         return output;
     }

@@ -18,6 +18,7 @@ class Tanh : ActivationLayer
             {
                 double pz = Math.Exp(x[i,j]);
                 double nz = Math.Exp(-x[i,j]);
+                
                 output[i,j] = (pz - nz) / (pz + nz);
             }
         }

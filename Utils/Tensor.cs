@@ -1,7 +1,11 @@
+using System.Text.Json.Serialization;
+
 class Tensor
 {
+    [JsonInclude]
     public int[] Shape;
-
+    
+    [JsonInclude]
     public double[] Data;
 
     public double this[params int[] indexer]
@@ -162,6 +166,37 @@ class Tensor
         }
 
         return tensor;
+    }
+
+    public bool DimensionMatch(Tensor other)
+    {
+        int[] otherShape = other.Shape;
+
+        int thisDim = Shape.Length;
+        int otherDim = otherShape.Length;
+
+        return thisDim == otherDim;
+    }
+
+    public bool ShapeMatch(Tensor other)
+    {
+        if (!DimensionMatch(other))
+        {
+            throw new ArgumentException("Dimension was not match!");
+        }
+
+        int[] otherShape = other.Shape;
+        int otherDim = otherShape.Length;
+
+        for(int i = 0; i < otherDim; i++)
+        {
+            if(Shape[i] != otherShape[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static int GetFlatSize(int[] shape)

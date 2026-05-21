@@ -55,11 +55,11 @@ class Softmax : ActivationLayer
                 {
                     if(j == k)
                     {
-                        gradInput[i,j] += CachedOutput[i,j] * (1 - CachedOutput[i,j]);
+                        gradInput[i,j] += x[i,k] * CachedOutput[i,j] * (1 - CachedOutput[i,k]);
                     }
                     else
                     {
-                        gradInput[i,j] += CachedOutput[i,j] * CachedOutput[i,k];
+                        gradInput[i,j] += x[i,k] * -CachedOutput[i,j] * CachedOutput[i,k];
                     }
                 }
             }

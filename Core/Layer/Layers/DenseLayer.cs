@@ -1,15 +1,18 @@
+using System.Text.Json.Serialization;
+
 class DenseLayer : Layer
 {
-    public Parameter Weight;
+    [JsonInclude]
+    public Parameter Weights;
 
+    [JsonInclude]
     public Parameter Bias;
 
     public DenseLayer(int inputSize, int outputSize) : base(inputSize, outputSize)
     {
-        Weight = new Parameter("Weight", new Matrix(outputSize, inputSize));
+        Weights = new Parameter("Weight", new Matrix(outputSize, inputSize));
 
         Bias = new Parameter("Bias", new Matrix(outputSize, 1));
-
     }
 
     public override Tensor Forward(Tensor x)
@@ -26,7 +29,7 @@ class DenseLayer : Layer
 
         CachedInput = x.Clone();
 
-        Tensor output = x.Dot(Weight.Data.Transpose());
+        Tensor output = x.Dot(Weights.Data.Transpose());
 
         for(int i = 0; i < batchSize; i++)
         {
@@ -53,9 +56,10 @@ class DenseLayer : Layer
             {
                 for(int k = 0; k < InputSize; k++)
                 {
-                    inputGrad[i,k] += x[i,j] * Weight.Data[j,k];
-                    Weight.Grad[j,k] += x[i,j] * CachedInput[i,k];
+                    inputGrad[i,k] += x[i,j] * Weights.Data[j,k];
+                    Weights.Grad[j,k] += x[i,j] * CachedInput[i,k];
                 }
+                Bias.Grad[j,0] += x[i,j];
             }
         }
 
@@ -64,7 +68,7 @@ class DenseLayer : Layer
 
     public override IEnumerable<Parameter> Parameters()
     {
-        yield return Weight;
+        yield return Weights;
         yield return Bias;
     }
 }
