@@ -4,15 +4,15 @@ class Sigmoid : ActivationLayer
     {
     }
 
-    public override Matrix Activate(Matrix x)
+    public override Tensor Activate(Tensor x)
     {
+        int batchSize = x.Shape[0];
+
         CachedInput = x.Clone();
 
-        int BatchSize = x.Rows;
+        Tensor output = new Tensor(batchSize, InputSize);
 
-        Matrix output = new Matrix(BatchSize, OutputSize);
-
-        for(int i = 0; i < BatchSize; i++)
+        for(int i = 0; i < batchSize; i++)
         {
             for(int j = 0; j < InputSize; j++)
             {
@@ -25,20 +25,20 @@ class Sigmoid : ActivationLayer
         return output;
     }
 
-    public override Matrix Derivative(Matrix x)
+    public override Tensor Derivative(Tensor x)
     {
-        int BatchSize = x.Rows;
+        int batchSize = x.Shape[0];
 
-        Matrix gradInput = new Matrix(BatchSize, InputSize);
+        Tensor gradInput = new Tensor(batchSize, InputSize);
 
-        for(int i = 0; i < BatchSize; i++)
+        for(int i = 0; i < batchSize; i++)
         {
-            for(int j = 0; j < OutputSize; j++)
+            for(int j = 0; j < InputSize; j++)
             {
                 gradInput[i,j] = x[i,j] * CachedOutput[i,j] * (1 - CachedOutput[i,j]);
             }
         }
-
+        
         return gradInput;
     }
 }

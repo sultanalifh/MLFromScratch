@@ -3,42 +3,54 @@ using System.Text.Json.Serialization;
 class Momentum : Optimizer
 {
     [JsonInclude]
-    public List<Matrix> Velocities;
+    public List<Tensor> Velocities;
 
     [JsonInclude]
     public double momentum;
-    public Momentum(Sequential sequential, double learningRate, double momentum) : base(sequential, learningRate)
+    public Momentum(Sequential sequential, double learningRate, double momentum = 0.9) : base(sequential, learningRate)
     {
-        Velocities = new List<Matrix>();
+        Velocities = new List<Tensor>();
+
+        this.momentum = momentum;
 
         foreach(Parameter parameter in Parameters)
         {
-            Matrix velocity = new Matrix(parameter.Data.Rows, parameter.Data.Cols);
+            int[] shape = parameter.Data.Shape;
+            int[] clonedShape;
+
+            int shapeSize = shape.Length;
+
+            clonedShape = new int[shapeSize];
+
+            Array.Copy(shape, clonedShape, shapeSize);
+
+            Tensor velocity = new Tensor(clonedShape);
+
             Velocities.Add(velocity);
         }
-
-        this.momentum = momentum;
     }
 
     public override void Step()
     {
-        int paramSize = Parameters.Count;
+        int paramCount = Parameters.Count;
 
-        for(int i = 0; i < paramSize; i++)
+        for(int i = 0; i < paramCount; i++)
         {
             Parameter parameter = Parameters[i];
-            Matrix velocity = Velocities[i];
+            Tensor velocity = Velocities[i];
 
-            int paramRows = parameter.Grad.Rows;
-            int paramCols = parameter.Grad.Cols;
+            double[] data = parameter.Data.Data;
+            double[] grad = parameter.Grad.Data;
 
-            for(int j = 0; j < paramRows; j++)
+            double[] velocityData = velocity.Data;
+
+            int dataSize = data.Length;
+
+            for(int j = 0; j < dataSize; j++)
             {
-                for(int k = 0; k < paramCols; k++)
-                {
-                    velocity[j,k] = momentum * velocity[j,k] + parameter.Grad[j,k] * LearningRate;
-                    parameter.Data[j,k] -= velocity[j,k];
-                }
+                velocityData[j] = momentum * velocityData[j] + grad[j] * LearningRate;
+
+                data[j] -= velocityData[j];
             }
         }
     }
@@ -47,14 +59,14 @@ class Momentum : Optimizer
     {
         foreach(Parameter parameter in Parameters)
         {
-            int paramRows = parameter.Grad.Rows;
-            int paramCols = parameter.Grad.Cols;
-            for(int i = 0; i < paramRows; i++)
+            Tensor grad = parameter.Grad;
+
+            double[] data = grad.Data;
+            int length = data.Length;
+
+            for(int i = 0; i < length; i++)
             {
-                for(int j = 0; j < paramCols; j++)
-                {
-                    parameter.Grad[i,j] = 0;
-                }
+                data[i] = 0;
             }
         }
     }

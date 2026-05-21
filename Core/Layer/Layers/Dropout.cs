@@ -4,36 +4,33 @@ class Dropout : Layer
 {
     [JsonInclude]
     public double DropoutRate;
-    public Matrix Mask;
+
+    public Tensor Mask;
     public bool IsTraining;
 
-    public Dropout(int inputSize, int outputSize, double dropOutRate) : base(inputSize, outputSize)
-    {
-        DropoutRate = dropOutRate;
 
-        IsTraining = true;
+    public Dropout(int inputSize, int outputSize, double dropoutRate) : base(inputSize, outputSize)
+    {
+        DropoutRate = dropoutRate;
     }
 
-    public override Matrix Forward(Matrix x)
+    public override Tensor Forward(Tensor x)
     {
         CachedInput = x.Clone();
 
         if (!IsTraining)
         {
-            CachedOutput = x.Clone();
-            
-            return CachedOutput;
+            return x;
         }
 
-        int batchSize = x.Rows;
+        int batchSize = x.Shape[0];
 
-        Matrix output = new Matrix(batchSize, OutputSize);
-
-        Mask = new Matrix(batchSize, OutputSize);
+        Mask = new Tensor(batchSize, InputSize);
+        Tensor output = new Tensor(batchSize, InputSize);
 
         for(int i = 0; i < batchSize; i++)
         {
-            for(int j = 0; j < OutputSize; j++)
+            for(int j = 0; j < InputSize; j++)
             {
                 Mask[i,j] = Utility.Random.NextDouble() > DropoutRate ? 1 : 0;
 
@@ -43,25 +40,18 @@ class Dropout : Layer
 
         CachedOutput = output.Clone();
 
-        return CachedOutput;
+        return output;
     }
 
-    public override Matrix Backward(Matrix x)
+    public override Tensor Backward(Tensor x)
     {
-        int BatchSize = x.Rows;
+        int batchSize = x.Shape[0];
 
-        Matrix gradInput = new Matrix(BatchSize, InputSize);
+        Tensor gradInput = new Tensor(batchSize, InputSize);
 
-        if (!IsTraining)
+        for(int i = 0; i < batchSize; i++)
         {
-            gradInput = x.Clone();
-
-            return gradInput;
-        }
-
-        for(int i = 0; i < BatchSize; i++)
-        {
-            for(int j = 0; j < OutputSize; j++)
+            for(int j = 0; j < InputSize; j++)
             {
                 gradInput[i,j] = x[i,j] * Mask[i,j] / (1 - DropoutRate);
             }
@@ -70,13 +60,10 @@ class Dropout : Layer
         return gradInput;
     }
 
+    
+
     public override IEnumerable<Parameter> Parameters()
     {
         yield break;
-    }
-
-    public override void Step(double learningRate)
-    {
-        return;
     }
 }

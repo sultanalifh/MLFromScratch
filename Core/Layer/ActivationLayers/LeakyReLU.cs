@@ -2,22 +2,21 @@ class LeakyReLU : ActivationLayer
 {
     public LeakyReLU(int inputSize, int outputSize) : base(inputSize, outputSize)
     {
-        
     }
 
-    public override Matrix Activate(Matrix x)
+    public override Tensor Activate(Tensor x)
     {
         CachedInput = x.Clone();
 
-        int batchSize = x.Rows;
+        int batchSize = x.Shape[0];
 
-        Matrix output = new Matrix(batchSize, OutputSize);
+        Tensor output = new Tensor(batchSize, InputSize);
 
         for(int i = 0; i < batchSize; i++)
         {
             for(int j = 0; j < InputSize; j++)
             {
-                output[i,j] = Math.Max(0.01 * x[i,j], x[i,j]);
+                output[i,j] = Math.Max(x[i,j] * 0.01, x[i,j]);
             }
         }
 
@@ -26,15 +25,15 @@ class LeakyReLU : ActivationLayer
         return output;
     }
 
-    public override Matrix Derivative(Matrix x)
+    public override Tensor Derivative(Tensor x)
     {
-        int batchSize = x.Rows;
-        
-        Matrix gradInput = new Matrix(batchSize, InputSize);
+        int batchSize = x.Shape[0];
+
+        Tensor gradInput = new Tensor(batchSize, InputSize);
 
         for(int i = 0; i < batchSize; i++)
         {
-            for(int j = 0; j < OutputSize; j++)
+            for(int j = 0; j < InputSize; j++)
             {
                 gradInput[i,j] = x[i,j] * (CachedInput[i,j] > 0 ? 1 : 0.01);
             }

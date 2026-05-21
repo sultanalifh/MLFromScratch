@@ -8,9 +8,9 @@ abstract class Layer
     [JsonInclude]
     public int OutputSize;
 
-    public Matrix CachedInput;
+    public Tensor CachedInput;
 
-    public Matrix CachedOutput;
+    public Tensor CachedOutput;
 
     public double Lambda = 0;
 
@@ -19,11 +19,9 @@ abstract class Layer
         InputSize = inputSize;
         OutputSize = outputSize;
     }
-    public abstract Matrix Forward(Matrix x);
+    public abstract Tensor Forward(Tensor x);
 
-    public abstract Matrix Backward(Matrix x);
-
-    public abstract void Step(double learningRate);
+    public abstract Tensor Backward(Tensor x);
 
     public abstract IEnumerable<Parameter> Parameters();
 }

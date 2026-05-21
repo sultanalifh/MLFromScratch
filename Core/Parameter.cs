@@ -6,21 +6,23 @@ class Parameter
     public string Name;
 
     [JsonInclude]
-    public Matrix Data;
+    public Tensor Data;
 
-    public Matrix Grad;
-
-    public Parameter(Matrix data, string name)
+    public Tensor Grad;
+    
+    public Parameter(string name, params int[] shape)
     {
         Name = name;
-        Data = data;
-        Grad = new Matrix(Data.Rows, Data.Cols);
+        Data = new Tensor(shape);
+        Grad = Data.Clone();
     }
 
-    public Parameter(int rows, int cols, string name)
+    // Tensor like family compatible
+
+    public Parameter(string name, Tensor tensor)
     {
         Name = name;
-        Data = new Matrix(rows, cols);
-        Grad = new Matrix(rows, cols);
+        Data = tensor;
+        Grad = Data.Clone();
     }
 }

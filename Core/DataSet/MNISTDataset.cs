@@ -28,7 +28,7 @@ class MNISTDataset : Dataset<MNISTSample>
 
         var samples = new Batch<MNISTSample>(dataset.Samples, numSample);
 
-        Matrix yPred = sequential.Forward(samples.X);
+        Tensor yPred = sequential.Forward(samples.X);
         
         for(int i = 0; i < numSample; i++)
         {
@@ -60,7 +60,7 @@ class MNISTDataset : Dataset<MNISTSample>
         int numSample = dataset.Samples.Count;
         var samples = new Batch<MNISTSample>(dataset.Samples, numSample);
 
-        Matrix yPred = sequential.Forward(samples.X);
+        Tensor yPred = sequential.Forward(samples.X);
 
         for(int i = 0; i < numSample; i++)
         {

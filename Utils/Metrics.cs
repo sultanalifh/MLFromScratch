@@ -1,13 +1,21 @@
 static class Metrics
 {
-    public static double MultiClassificationAccuracy(Matrix yPred, Matrix yTrue)
+    public static double MultiClassificationAccuracy(Tensor yPred, Tensor yTrue)
     {
-        if(yPred.Rows != yTrue.Rows || yPred.Cols != yTrue.Cols)
+        if(!yPred.ShapeMatch(yTrue))
         {
             throw new ArgumentException("Shape Mismatch!");
         }
-        int numPred = yPred.Rows;
-        int numClass = yPred.Cols;
+
+        int[] predShape = yPred.Shape;
+
+        if(predShape.Length != 2)
+        {
+            throw new ArgumentException("Couldn't compute accuracy for non-matrices Tensor");
+        }
+
+        int numPred = predShape[0];
+        int numClass = predShape[1];
 
         double correct = 0;
 

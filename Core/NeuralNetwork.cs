@@ -49,9 +49,9 @@ class NeuralNetwork
         Optimizer = optimizer;
     }
 
-    public Matrix Predict(Matrix x) => Sequential.Forward(x);
+    public Tensor Predict(Tensor x) => Sequential.Forward(x);
 
-    public void Fit(Matrix x, Matrix yTrue)
+    public void Fit(Tensor x, Tensor yTrue)
     {
         Optimizer.ZeroGrad();
 
@@ -64,11 +64,11 @@ class NeuralNetwork
             }
         }
 
-        Matrix yPred = Sequential.Forward(x);
+        Tensor yPred = Sequential.Forward(x);
 
-        yPred = Loss.LossGrad(yPred, yTrue, ModelLoss);
+        Tensor grad = Loss.LossGrad(yPred, yTrue, ModelLoss);
 
-        Sequential.Backward(yPred);
+        Sequential.Backward(grad);
 
         foreach(Layer layer in Sequential.Layers)
         {

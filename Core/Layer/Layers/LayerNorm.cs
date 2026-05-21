@@ -1,59 +1,60 @@
-
-using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 class LayerNorm : Layer
-{  
-    private double _Epsilon = 1e-5;
-
+{
     [JsonInclude]
     public Parameter Gamma;
-
+    
     [JsonInclude]
     public Parameter Beta;
+
+
     public LayerNorm(int inputSize, int outputSize) : base(inputSize, outputSize)
     {
-        Gamma = new Parameter(1, inputSize, "Gamma");
-        Beta = new Parameter(1, inputSize, "Beta");
+        Gamma = new Parameter("Gamma", 1, inputSize);
+        Beta = new Parameter("Beta", 1, inputSize);
 
-        for(int i = 0; i < InputSize; i++)
-        {
-            Gamma.Data[0,i] = 1;
-        }
-
-        CachedInput = new Matrix(outputSize, inputSize);
-        CachedOutput = new Matrix(outputSize, inputSize);
+        Array.Fill(Gamma.Data.Data, 1);
     }
-    public override Matrix Forward(Matrix x)
+    public override Tensor Forward(Tensor x)
     {
         CachedInput = x.Clone();
 
-        int BatchSize = x.Rows;
+        int batchSize = x.Shape[0];
 
-        Matrix output = new Matrix(BatchSize, OutputSize);
+        Tensor output = new Tensor(batchSize, InputSize);
 
-        for(int i = 0; i < BatchSize; i++)
+        for(int i = 0; i < batchSize; i++)
         {
-            double Mean = x.RowSum(i) / InputSize;
-
-            double Variance = 0;
+            double mean = 0;
 
             for(int j = 0; j < InputSize; j++)
             {
-                Variance += (x[i,j] - Mean) * (x[i,j] - Mean);
+                mean += x[i,j];
             }
 
-            Variance /= InputSize;
+            mean /= InputSize;
 
-            double std = Math.Sqrt(Variance + _Epsilon);
+            double variances = 0;
 
             for(int j = 0; j < InputSize; j++)
             {
-                double x_norm = (x[i,j] - Mean) / std;
+                variances += (x[i,j] - mean) * (x[i,j] - mean);
+            }
 
-                double x_normalized = Gamma.Data[0,j] * x_norm + Beta.Data[0,j];
 
-                output[i,j] = x_normalized;
+            // 1/2 * x^-1/2
+            // 1/2std
+            variances /= InputSize;
+
+            double std = Math.Sqrt(variances + Utility.e5Eps);
+
+            for(int j = 0; j < InputSize; j++)
+            {
+                double x_norm = (x[i,j] - mean) / std;
+                double x_hat = Gamma.Data[0,j] * x_norm + Beta.Data[0,j];
+
+                output[i,j] = x_hat;
             }
         }
 
@@ -61,64 +62,79 @@ class LayerNorm : Layer
 
         return output;
     }
-    public override Matrix Backward(Matrix x)
+
+    public override Tensor Backward(Tensor x)
     {
-        int BatchSize = x.Rows;
+        // Gamma / std
 
-        Matrix gradInput = new Matrix(BatchSize, InputSize);
+        // E(Gamma * -1/std) * 1/n
+        // E(Gamma) / n * -1/std
+        // Mean(Gamma) * -1 / std
 
-        for(int i = 0; i < BatchSize; i++)
+
+        // E(Gamma * -(xi - u)/std^2) * 1/2std * 2(xi - u)/n
+        // E(Gamma * x_hat_j) * -1/std * 1/2std * 2(xi - u)/n
+        // Mean(Gamma * x_hat_j) * -1/std * 1/2std * 2(xi - u)
+        // Mean(Gamma * x_hat_j) * -1/std * x_hat_i
+
+        //  Gamma / std - Mean(Gamma) / std - Mean(gamma * x_hat j) * x_hat_i / std
+        //  (Gamma - Mean(Gamma) - Mean(Gamma * x_hat_j) * x_hat_i) / std
+
+        int batchSize = x.Shape[0];
+
+        Tensor gradInput = new Tensor(batchSize, InputSize);
+
+        for(int i = 0; i < batchSize; i++)
         {
-            double[] xhat = new double[InputSize];
-            double[] gradXhat = new double[InputSize];
-
-            double dXhatXhat = 0;
-            double dXhat = 0;
-
-            double mean = CachedInput.RowSum(i) / InputSize;
-
-            double variance = 0;
+            double mean = 0;
 
             for(int j = 0; j < InputSize; j++)
-                variance += (CachedInput[i,j] - mean) * (CachedInput[i,j] - mean);
+            {
+                mean += CachedInput[i,j];
+            }
 
-            variance /= InputSize;
+            mean /= InputSize;
 
-            double std = Math.Sqrt(variance + _Epsilon);
+            double variances = 0;
+
+            for(int j = 0; j < InputSize; j++)
+            {
+                variances += (CachedInput[i,j] - mean) * (CachedInput[i,j] - mean);
+            }
+
+            variances /= InputSize;
+
+            double std = Math.Sqrt(variances + Utility.e5Eps);
+
+            double[] x_norms = new double[InputSize];
+            double xHat = 0;
+            double xHatxHat = 0;
 
             for(int j = 0; j < InputSize; j++)
             {
                 double x_norm = (CachedInput[i,j] - mean) / std;
-                double dyi_dxnorm = x[i,j] * Gamma.Data[0,j];
-                gradXhat[j] = dyi_dxnorm;
-                xhat[j] = x_norm;
-                dXhat += dyi_dxnorm;
-                dXhatXhat += dyi_dxnorm * x_norm;
+
+                x_norms[j] = x_norm;
 
                 Gamma.Grad[0,j] += x[i,j] * x_norm;
                 Beta.Grad[0,j] += x[i,j];
+
+                xHat += x[i,j] * Gamma.Data[0,j];
+                xHatxHat += x[i,j] * Gamma.Data[0,j] * x_norm;
             }
 
-            dXhat /= InputSize;
-            dXhatXhat /= InputSize;
+            xHat /= InputSize;
+            xHatxHat /= InputSize;
 
             for(int j = 0; j < InputSize; j++)
             {
-                gradInput[i,j] = (gradXhat[j] - dXhat - xhat[j] * dXhatXhat) / std;
+                double x_hat_j = x[i,j] * Gamma.Data[0,j];
+
+                gradInput[i,j] = (x_hat_j - xHat - xHatxHat * x_norms[j]) / std;
             }
         }
 
         return gradInput;
-    }
-    public override void Step(double learningRate)
-    {
-        for(int i = 0; i < InputSize; i++)
-        {
-            Gamma.Data[0,i] -= Gamma.Grad[0,i] * learningRate;
-            Beta.Data[0,i] -= Beta.Grad[0,i] * learningRate;
-
-            Gamma.Grad[0,i] = Beta.Grad[0,i] = 0;
-        }
     }
 
     public override IEnumerable<Parameter> Parameters()

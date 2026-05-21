@@ -1,24 +1,25 @@
-
 class Tanh : ActivationLayer
 {
     public Tanh(int inputSize, int outputSize) : base(inputSize, outputSize)
     {
-        
     }
 
-    public override Matrix Activate(Matrix x)
+    public override Tensor Activate(Tensor x)
     {
         CachedInput = x.Clone();
 
-        int batchSize = x.Rows;
+        int batchSize = x.Shape[0];
 
-        Matrix output = new Matrix(batchSize, OutputSize);
+        Tensor output = new Tensor(batchSize, InputSize);
 
         for(int i = 0; i < batchSize; i++)
         {
             for(int j = 0; j < InputSize; j++)
             {
-                output[i,j] = Math.Tanh(x[i,j]);
+                double pz = Math.Exp(x[i,j]);
+                double nz = Math.Exp(-x[i,j]);
+                
+                output[i,j] = (pz - nz) / (pz + nz);
             }
         }
 
@@ -27,16 +28,17 @@ class Tanh : ActivationLayer
         return output;
     }
 
-    public override Matrix Derivative(Matrix x)
+    public override Tensor Derivative(Tensor x)
     {
-        int batchSize = x.Rows;
+        int batchSize = x.Shape[0];
 
-        Matrix gradInput = new Matrix(batchSize, InputSize);
+        Tensor gradInput = new Tensor(batchSize, InputSize);
+
         for(int i = 0; i < batchSize; i++)
         {
-            for(int j = 0; j < OutputSize; j++)
+            for(int j = 0; j < InputSize; j++)
             {
-                gradInput[i,j] = x[i,j] * (1 - CachedOutput[i,j] * CachedOutput[i,j]);
+                gradInput[i,j] = 1 - CachedOutput[i,j] * CachedOutput[i,j];
             }
         }
 

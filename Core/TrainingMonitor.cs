@@ -87,19 +87,19 @@ static class TrainingMonitor
             Console.WriteLine($"--- Gradient Check for {parameter.Name} ---");
 
             double originalWeight = parameter.Data[0,0];
-            Matrix yGrad = Loss.LossGrad(sequential.Forward(testcase), ans, network.ModelLoss);
+            Tensor yGrad = Loss.LossGrad(sequential.Forward(testcase), ans, network.ModelLoss);
             sequential.Backward(yGrad);
 
             double analyticalGrad = parameter.Grad[0,0];
 
             parameter.Data[0,0] = originalWeight + Utility.e5Eps;
             
-            Matrix sample1 = sequential.Forward(testcase);
+            Tensor sample1 = sequential.Forward(testcase);
             double sample1Loss = Loss.LossValue(sample1, ans, network.ModelLoss) * batchSize;
 
             parameter.Data[0,0] = originalWeight - Utility.e5Eps;
 
-            Matrix sample2 = sequential.Forward(testcase);
+            Tensor sample2 = sequential.Forward(testcase);
             double sample2Loss = Loss.LossValue(sample2, ans, network.ModelLoss) * batchSize;
 
             double numericalGrad = (sample1Loss - sample2Loss) / (2 * Utility.e5Eps);

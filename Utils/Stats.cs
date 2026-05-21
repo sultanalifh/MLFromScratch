@@ -1,158 +1,111 @@
+// mean
+// variances
+// meanabs
+// maxabs
+// hasnan
+// zeroratio
+
 static class Stats
 {
-    public static double Mean(Matrix x)
+    public static double Mean(Tensor tensor)
     {
-        int Rows = x.Rows;
-        int cols = x.Cols;
+        double sum = 0;
 
-        Matrix mean = new Matrix(Rows, 1);
+        double[] data = tensor.Data;
+        int dataLength = data.Length;
 
-        for(int i = 0; i < Rows; i++)
+        for(int i = 0; i < dataLength; i++)
         {
-            for(int j = 0; j < cols; j++)
-            {
-                mean[i,0] += x[i,j];
-            }
-
-            mean[i,0] /= cols;
+            sum += data[i];
         }
 
-        double meanSum = 0;
+        sum /= dataLength;
 
-        for(int i = 0; i < Rows; i++)
-        {
-            meanSum += mean[i,0];
-        }
-
-        meanSum /= Rows;
-
-        return meanSum;
+        return sum;
     }
 
-    public static double Variance(Matrix x)
+    public static double Variance(Tensor tensor)
     {
-        int rows = x.Rows;
-        int cols = x.Cols;
+        double mean = Mean(tensor);
+        double variances = 0;
 
-        Matrix mean = new Matrix(rows, 1);
+        double[] data = tensor.Data;
+        int dataLength = data.Length;
 
-        for(int i = 0; i < rows; i++)
+        for(int i = 0; i < dataLength; i++)
         {
-            for(int j = 0; j < cols; j++)
-            {
-                mean[i,0] += x[i,j];
-            }
-
-            mean[i,0] /= cols;
+            variances += (data[i] - mean) * (data[i] - mean);
         }
+        
+        variances /= dataLength;
 
-        Matrix variance = new Matrix(rows,1);
-
-        for(int i = 0; i < rows; i++)
-        {
-            for(int j = 0; j < cols; j++)
-            {
-                variance[i,0] += (x[i,j] - mean[i,0]) * (x[i,j] - mean[i,0]);
-            }
-
-            variance[i,0] = Math.Sqrt(variance[i,0] / cols + Utility.e5Eps);
-        }
-
-        double varSum = 0;
-
-        for(int i = 0; i < rows; i++)
-        {
-            varSum += variance[i,0];
-        }
-
-        varSum /= rows;
-
-        return varSum;
+        return variances;
     }
 
-    
-    public static double MeanAbs(Matrix x)
+    public static double MeanAbs(Tensor tensor)
     {
-        int rows = x.Rows;
-        int cols = x.Cols;
+        double sum = 0;
 
-        Matrix meanAbs = new Matrix(rows, 1);
+        double[] data = tensor.Data;
+        int dataLength = data.Length;
 
-        for(int i = 0; i < rows; i++)
+
+        for(int i = 0; i < dataLength; i++)
         {
-            for(int j = 0; j < cols; j++)
-            {
-                meanAbs[i,0] += Math.Abs(x[i,j]);
-            }
-
-            meanAbs[i,0] /= cols;
+            sum += Math.Abs(data[i]);
         }
 
-        double meanAbsSum = 0;
+        sum /= dataLength;
 
-        for(int i = 0; i < rows; i++)
-        {
-            meanAbsSum += meanAbs[i,0];
-        }
-
-        meanAbsSum /= rows;
-
-        return meanAbsSum;
+        return sum;
     }
 
-    public static double MaxAbs(Matrix x)
+    public static double MaxAbs(Tensor tensor)
     {
-        int rows = x.Rows;
-        int cols = x.Cols;
-
         double max = 0;
 
-        for(int i = 0; i < rows; i++)
+        double[] data = tensor.Data;
+        int dataLength = data.Length;
+
+        for(int i = 0; i < dataLength; i++)
         {
-            for(int j = 0; j < cols; j++)
-            {
-                max = Math.Max(max, Math.Abs(x[i,j]));
-            }
+            max = Math.Max(max, Math.Abs(data[i]));
         }
 
         return max;
     }
 
-    public static bool HasNaN(Matrix x)
+    public static bool HasNaN(Tensor tensor)
     {
-        int rows = x.Rows;
-        int cols = x.Cols;
+        double[] data = tensor.Data;
+        int dataLength = data.Length;
 
-        for(int i = 0; i < rows; i++)
+        for(int i = 0; i < dataLength; i++)
         {
-            for(int j = 0; j < cols; j++)
+            if(data[i] == double.NaN)
             {
-                if(x[i,j] == double.NaN)
-                {
-                    return true;
-                }
+                return true;
             }
         }
 
         return false;
     }
 
-    public static double ZeroRatio(Matrix x)
+    public static double ZeroRatio(Tensor tensor)
     {
-        int rows = x.Rows;
-        int cols = x.Cols;
+        double[] data = tensor.Data;
+        int dataLength = data.Length;
 
-        int totalElem = rows * cols;
-        double totalZero = 0;
+        double zero = 0;
 
-        for(int i = 0; i < rows; i++)
+        for(int i = 0; i < dataLength; i++)
         {
-            for(int j = 0; j < cols; j++)
+            if(data[i] == zero)
             {
-                if(x[i,j] == 0) totalZero++;
+                zero++;
             }
         }
 
-        return totalZero / totalElem;
+        return zero / dataLength;
     }
 }

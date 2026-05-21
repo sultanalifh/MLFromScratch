@@ -3,65 +3,74 @@ using System.Text.Json.Serialization;
 class Adam : Optimizer
 {
     [JsonInclude]
-    public double Beta1, Beta2;
+    public List<Tensor> Velocities;
+    [JsonInclude]
+    public List<Tensor> Variances;
 
     [JsonInclude]
-    public double TBeta1, TBeta2;
-
+    public double Beta1;
     [JsonInclude]
-    public List<Matrix> Velocities;
-
+    public double TBeta1;
     [JsonInclude]
-    public List<Matrix> Variances;
+    public double Beta2;
+    [JsonInclude]
+    public double TBeta2;
+    
     public Adam(Sequential sequential, double learningRate, double beta1 = 0.9, double beta2 = 0.999) : base(sequential, learningRate)
     {
-        Velocities = new List<Matrix>();
-        Variances = new List<Matrix>();
+        Velocities = new List<Tensor>();
+        Variances = new List<Tensor>();
+
+        Beta1 = TBeta1 = beta1;
+        Beta2 = TBeta2 = beta2;
+       
 
         foreach(Parameter parameter in Parameters)
         {
-            int paramRows = parameter.Data.Rows;
-            int paramCols = parameter.Data.Cols;
+            Tensor paramData = parameter.Data;
 
-            Matrix velocity = new Matrix(paramRows, paramCols);
-            Matrix variance = new Matrix(paramRows, paramCols);
+            int[] velocityShape = new int[paramData.Shape.Length];
+            int[] varianceShape = new int[paramData.Shape.Length];
+
+            Array.Copy(paramData.Shape, velocityShape, paramData.Shape.Length);
+            Array.Copy(paramData.Shape, varianceShape, paramData.Shape.Length);
+
+            Tensor velocity = new Tensor(velocityShape);
+            Tensor variance = new Tensor(varianceShape);
 
             Velocities.Add(velocity);
             Variances.Add(variance);
         }
-
-        Beta1 = TBeta1 = beta1;
-        Beta2 = TBeta2 = beta2;
     }
 
     public override void Step()
     {
-        int totalParam = Parameters.Count;
+        int paramCount = Parameters.Count;
 
-        for(int i = 0; i < totalParam; i++)
+        for(int i = 0; i < paramCount; i++)
         {
             Parameter parameter = Parameters[i];
-            Matrix velocity = Velocities[i];
-            Matrix variance = Variances[i];
 
-            int paramRows = parameter.Grad.Rows;
-            int paramCols = parameter.Grad.Cols;
+            Tensor velocity = Velocities[i];
+            Tensor variance = Variances[i];
 
-            for(int j = 0; j < paramRows; j++)
+            double[] data = parameter.Data.Data;
+            double[] grad = parameter.Grad.Data;
+
+            double[] velocityData = velocity.Data;
+            double[] varianceData = variance.Data;
+
+            int gradSize = grad.Length;
+
+            for(int j = 0; j < gradSize; j++)
             {
-                for(int k = 0; k < paramCols; k++)
-                {
-                    double grad = parameter.Grad[j,k];
-                    velocity[j,k] = Beta1 * velocity[j,k] + (1 - Beta1) * grad;
-                    variance[j,k] = Beta2 * variance[j,k] + (1 - Beta2) * grad * grad;
+                velocityData[j] = velocityData[j] * Beta1 + grad[j] * (1 - Beta1);
+                varianceData[j] = varianceData[j] * Beta2 + grad[j] * grad[j] * (1 - Beta2);
 
-                    double vHat = velocity[j,k] / (1 - TBeta1);
-                    double varHat = variance[j,k] / (1 - TBeta2);
-                    
-                    parameter.Data[j,k] -= LearningRate * vHat / (Math.Sqrt(varHat) + Utility.e5Eps);
+                double velHat = velocityData[j] / (1 - TBeta1);
+                double varHat = varianceData[j] / (1 - TBeta2);
 
-                    
-                }
+                data[j] -= LearningRate * velHat / (Math.Sqrt(varHat) + Utility.e5Eps);
             }
         }
 
@@ -73,15 +82,14 @@ class Adam : Optimizer
     {
         foreach(Parameter parameter in Parameters)
         {
-            int paramRows = parameter.Grad.Rows;
-            int paramCols = parameter.Grad.Cols;
+            Tensor grad = parameter.Grad;
 
-            for(int i = 0; i < paramRows; i++)
+            double[] data = grad.Data;
+            int length = data.Length;
+
+            for(int i = 0; i < length; i++)
             {
-                for(int j = 0; j < paramCols; j++)
-                {
-                    parameter.Grad[i,j] = 0;
-                }
+                data[i] = 0;
             }
         }
     }

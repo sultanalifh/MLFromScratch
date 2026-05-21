@@ -4,17 +4,17 @@ class Softmax : ActivationLayer
     {
     }
 
-    public override Matrix Activate(Matrix x)
+    public override Tensor Activate(Tensor x)
     {
         CachedInput = x.Clone();
 
-        int BatchSize = x.Rows;
+        int batchSize = x.Shape[0];
 
-        Matrix output = new Matrix(BatchSize, OutputSize);
-        
-        for(int i = 0; i < BatchSize; i++)
+        Tensor output = new Tensor(batchSize, InputSize);
+
+        for(int i = 0; i < batchSize; i++)
         {
-            double max = Utility.e12Eps;
+            double max = x[i,0];
 
             for(int j = 0; j < InputSize; j++)
             {
@@ -25,16 +25,14 @@ class Softmax : ActivationLayer
 
             for(int j = 0; j < InputSize; j++)
             {
-                double zj = Math.Exp(x[i,j] - max);
-                sum += zj;
+                output[i,j] = Math.Exp(x[i,j] - max);
 
-                output[i,j] = zj;
+                sum += output[i,j];
             }
 
             for(int j = 0; j < InputSize; j++)
             {
-                double pj = output[i,j] / sum;
-                output[i,j] = pj;
+                output[i,j] = output[i,j] / sum;
             }
         }
 
@@ -43,24 +41,30 @@ class Softmax : ActivationLayer
         return output;
     }
 
-    public override Matrix Derivative(Matrix x)
+    public override Tensor Derivative(Tensor x)
     {
-        int BatchSize = x.Rows;
+        int batchSize = x.Shape[0];
 
-        Matrix gradInput = new Matrix(BatchSize, InputSize);
+        Tensor gradInput = new Tensor(batchSize, InputSize);
 
-        for(int i = 0; i < BatchSize; i++)
+        for(int i = 0; i < batchSize; i++)
         {
             for(int j = 0; j < InputSize; j++)
             {
-                for(int k = 0; k < OutputSize; k++)
+                for(int k = 0; k < InputSize; k++)
                 {
-                    if(j == k) gradInput[i,j] += x[i,k] * CachedOutput[i,j] * (1 - CachedOutput[i,k]);
-                    else gradInput[i,j] += x[i,k] * -CachedOutput[i,j] * CachedOutput[i,k];
+                    if(j == k)
+                    {
+                        gradInput[i,j] += x[i,k] * CachedOutput[i,j] * (1 - CachedOutput[i,k]);
+                    }
+                    else
+                    {
+                        gradInput[i,j] += x[i,k] * -CachedOutput[i,j] * CachedOutput[i,k];
+                    }
                 }
             }
         }
-        
+
         return gradInput;
     }
 }

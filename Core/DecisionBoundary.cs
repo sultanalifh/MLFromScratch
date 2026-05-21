@@ -34,7 +34,7 @@ static class DecisionBoundary
         int batchSize = testcase.Rows;
         int numClass = 3;
 
-        Matrix yPred = model.Predict(testcase);
+        Tensor yPred = model.Predict(testcase);
         
         for(int i = 0; i < total; i++)
         {
