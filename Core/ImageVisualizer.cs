@@ -25,15 +25,15 @@ static class ImageVisualizer
         Console.WriteLine();
     }
 
-    public static double[] normalize(double[] image)
+    public static Tensor normalize(Tensor image)
     {
-        int n = image.Length;
+        int n = image.Data.Length;
 
-        double[] result = new double[n];
+        Tensor result = new Tensor(n);
 
         for(int i = 0; i < n; i++)
         {
-            result[i] = image[i] / 255.0;
+            result[i] = image.Data[i] / 255.0;
         }
 
         return result;

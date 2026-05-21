@@ -1,34 +1,54 @@
 class Batch<TSample> where TSample : Sample
 {
     public int Size;
-    public Matrix X;
+    public Tensor X;
 
-    public Matrix Y;
+    public Tensor Y;
 
     public Batch(List<TSample> samples, int size)
     {
         Size = size;
 
-        int inputSize = samples[0].Input.Length;
-        int targetSize = samples[0].Target.Length;
+        int[] inputShape = samples[0].Input.Shape;
+        int inputShapeSize = inputShape.Length;
 
-        X = new Matrix(size, inputSize);
-        Y = new Matrix(size, targetSize);
+        int[] targetShape = samples[0].Target.Shape;
+        int targetShapeSize = targetShape.Length;
+
+        int[] batchXShape = new int[inputShapeSize + 1];
+        int[] batchYShape = new int[targetShapeSize + 1];
+
+        batchXShape[0] = batchYShape[0] = size;
+
+        Array.Copy(inputShape, 0, batchXShape, 1, inputShapeSize);
+        Array.Copy(targetShape, 0, batchYShape, 1, targetShapeSize);
+
+        X = new Tensor(batchXShape);
+        Y = new Tensor(batchYShape);
+
+        int inputSize = samples[0].Input.Data.Length;
+        int targetSize = samples[0].Target.Data.Length;
 
         for(int i = 0; i < size; i++)
         {
-            Sample sample = samples[i];
-            double[] input = sample.Input;
-            double[] target = sample.Target;
+            int dx = i * inputSize;
+            int dy = i * targetSize;
+
+            Tensor input = samples[i].Input;
+            Tensor target = samples[i].Target;
 
             for(int j = 0; j < inputSize; j++)
             {
-                X[i,j] = input[j];
+                int x_pos = dx + j;
+
+                X.Data[x_pos] = input.Data[j];
             }
 
             for(int j = 0; j < targetSize; j++)
             {
-                Y[i,j] = target[j];
+                int y_pos = dy + j;
+
+                Y.Data[y_pos] = target.Data[j];
             }
         }
     }

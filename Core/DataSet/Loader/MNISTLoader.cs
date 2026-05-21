@@ -15,7 +15,7 @@ static class MNISTLoader
         {
             List<object> raw_image = (List<object>) raw_images[i];
 
-            double[] image = new double[imageSize];
+            Tensor image = new Tensor(imageSize);
             int label = (byte) raw_labels[i];
 
             for(int j = 0; j < width; j++)
@@ -32,7 +32,7 @@ static class MNISTLoader
 
             image = ImageVisualizer.normalize(image);
 
-            MNISTSample sample = new MNISTSample(image, label);
+            MNISTSample sample = new MNISTSample(image, label, width);
 
             dataset.Samples.Add(sample);
         }

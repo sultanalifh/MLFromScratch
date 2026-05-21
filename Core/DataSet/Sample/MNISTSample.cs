@@ -1,23 +1,28 @@
 class MNISTSample : Sample
 {
-    public double[] Image;
+    public Tensor Image;
 
     public int Label;
 
-    public override double[] Input => Image;
+    public override Tensor Input => Image;
 
-    public override double[] Target
+    public override Tensor Target
     {
         get
         {
-            double[] oneHot = new double[10];
+            Tensor oneHot = new Tensor(10);
             oneHot[Label] = 1;
             return oneHot;
         }
     }
 
-    public MNISTSample(double[] image, int label)
+    public MNISTSample(Tensor image, int label, int width = 0)
     {
+        if(width != 0)
+        {
+            image = image.Reshape(1, width, width);
+        }
+        
         Image = image;
         Label = label;
     }

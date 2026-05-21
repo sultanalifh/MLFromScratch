@@ -1,6 +1,6 @@
 abstract class Sample
 {
-    public abstract double[] Input { get; }
+    public abstract Tensor Input { get; }
 
-    public abstract double[] Target { get; }
+    public abstract Tensor Target { get; }
 }

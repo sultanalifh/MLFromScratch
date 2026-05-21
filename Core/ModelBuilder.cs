@@ -337,9 +337,39 @@ class ModelBuilder
         DenseLayer denseLayer = new DenseLayer(inputSize, outputSize);
         Parameter Weight = denseLayer.Weights;
 
-        Initialize(init, Weight);
+        Initialize(init, Weight, inputSize);
 
         Layers.Add(denseLayer);
+
+        return this;
+    }
+
+    public ModelBuilder Conv2D(int inputSize, int outputSize, int filterHeight, int filterWidth, int stride, int padding, InitType init)
+    {
+        Conv2D conv2D = new Conv2D(inputSize, outputSize, filterHeight, filterWidth, stride, padding);
+        Parameter filter = conv2D.Filter;
+
+        Initialize(init, filter, inputSize * filterHeight * filterWidth);
+
+        Layers.Add(conv2D);
+
+        return this;
+    }
+
+    public ModelBuilder MaxPool(int inputSize, int poolHeight, int poolWidth, int stride, int padding)
+    {
+        MaxPool maxPool = new MaxPool(inputSize, inputSize, poolHeight, poolWidth, stride, padding);
+
+        Layers.Add(maxPool);
+
+        return this;
+    }
+
+    public ModelBuilder Flatten(int size)
+    {
+        Flatten flatten = new Flatten(size, size);
+
+        Layers.Add(flatten);
 
         return this;
     }
@@ -418,16 +448,15 @@ class ModelBuilder
         return network;
     }
 
-    private void Initialize(InitType init, Parameter param)
+    private void Initialize(InitType init, Parameter param, int n_in)
     {
         double[] data = param.Data.Data;
         int[] shape = param.Data.Shape;
-        int inputSize = shape[shape.Length - 1];
 
         double std = init switch
         {
-            InitType.Xavier => Math.Sqrt(1d / inputSize),
-            InitType.He => Math.Sqrt(2d / inputSize),
+            InitType.Xavier => Math.Sqrt(1d / n_in),
+            InitType.He => Math.Sqrt(2d / n_in),
             _ => 0.01,
         };
 

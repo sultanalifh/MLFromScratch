@@ -6,7 +6,7 @@ class ML {
         int trainSample = 10;
         int testSample = 100;
 
-        ModelCheckpoint modelCheckpoint = ModelCheckpoint.Load("test");
+        ModelCheckpoint modelCheckpoint = ModelCheckpoint.Load("conv");
 
         NeuralNetwork network = modelCheckpoint.NeuralNetwork;
         Sequential sequential = network.Sequential;
@@ -32,7 +32,6 @@ class ML {
 
                 network.Fit(miniBatch.X, miniBatch.Y);
             }
-
             
             Tensor testPred = sequential.Forward(testBatch.X);
             Tensor trainPred = sequential.Forward(trainBatch.X);
@@ -50,10 +49,13 @@ class ML {
 
             TrainingMonitor.LogEpoch(currentEpoch, trainLoss, testLoss, trainAcc * 100, testAcc * 100, network);
 
-            modelCheckpoint.Track(testLoss);
+            // modelCheckpoint.Track(testLoss);
 
-            modelCheckpoint.Track();
+            // modelCheckpoint.Track();
         }
+
+        TrainingMonitor.CheckNumericalGrad(network, trainBatch.X, trainBatch.Y, 0);
+
 
         // for(int i = sequential.Layers.Count - 1; i >= 0; i--)
         // {

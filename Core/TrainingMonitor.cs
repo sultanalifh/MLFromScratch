@@ -58,7 +58,7 @@ static class TrainingMonitor
         }
     }
 
-    public static void CheckNumericalGrad(NeuralNetwork network, Matrix testcase, Matrix ans, int layerPos)
+    public static void CheckNumericalGrad(NeuralNetwork network, Tensor testcase, Tensor ans, int layerPos)
     {
         Sequential sequential = network.Sequential;
         Optimizer optimizer = network.Optimizer;
@@ -68,13 +68,9 @@ static class TrainingMonitor
         {
             throw new ArgumentOutOfRangeException("Index layer out of bounds!");
         }
-        else if(testcase.Rows != ans.Rows)
-        {
-            throw new ArgumentException("Shape mismatch!");
-        }
 
         Layer layer = sequential.Layers[layerPos];
-        int batchSize = testcase.Rows;
+        int batchSize = testcase.Shape[0];
         string layerName = layer.GetType().Name;
 
         Console.WriteLine($"--- Numerical Grad analysis on layer {layerPos}, {layerName} ---");
@@ -86,18 +82,18 @@ static class TrainingMonitor
             Console.WriteLine();
             Console.WriteLine($"--- Gradient Check for {parameter.Name} ---");
 
-            double originalWeight = parameter.Data[0,0];
+            double originalWeight = parameter.Data.Data[0];
             Tensor yGrad = Loss.LossGrad(sequential.Forward(testcase), ans, network.ModelLoss);
             sequential.Backward(yGrad);
 
-            double analyticalGrad = parameter.Grad[0,0];
+            double analyticalGrad = parameter.Grad.Data[0];
 
-            parameter.Data[0,0] = originalWeight + Utility.e5Eps;
+            parameter.Data.Data[0] = originalWeight + Utility.e5Eps;
             
             Tensor sample1 = sequential.Forward(testcase);
             double sample1Loss = Loss.LossValue(sample1, ans, network.ModelLoss) * batchSize;
 
-            parameter.Data[0,0] = originalWeight - Utility.e5Eps;
+            parameter.Data.Data[0] = originalWeight - Utility.e5Eps;
 
             Tensor sample2 = sequential.Forward(testcase);
             double sample2Loss = Loss.LossValue(sample2, ans, network.ModelLoss) * batchSize;
@@ -111,7 +107,7 @@ static class TrainingMonitor
             Console.WriteLine($"Numerical Gradient: {numericalGrad}");
             Console.WriteLine($"Relative Error: {accuracy}");
 
-            parameter.Data[0,0] = originalWeight;
+            parameter.Data.Data[0] = originalWeight;
         }
     }
 }

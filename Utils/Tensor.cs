@@ -61,7 +61,7 @@ class Tensor
 
         return flattenIndex;
     }
-    public Tensor Reshape(int[] newShape)
+    public Tensor Reshape(params int[] newShape)
     {
         int flattenSize = GetFlatSize(Shape);
         int flattenNewSize = GetFlatSize(newShape);
