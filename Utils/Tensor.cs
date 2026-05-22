@@ -57,6 +57,7 @@ class Tensor
             flattenIndex += indexer[i] * stackedIndex;
 
             stackedIndex *= Shape[i];
+            
         }
 
         return flattenIndex;

@@ -5,7 +5,7 @@ class Batch<TSample> where TSample : Sample
 
     public Tensor Y;
 
-    public Batch(List<TSample> samples, int size)
+    public Batch(List<TSample> samples, int start, int size)
     {
         Size = size;
 
@@ -29,7 +29,7 @@ class Batch<TSample> where TSample : Sample
         int inputSize = samples[0].Input.Data.Length;
         int targetSize = samples[0].Target.Data.Length;
 
-        for(int i = 0; i < size; i++)
+        for(int i = start; i < start + size; i++)
         {
             int dx = i * inputSize;
             int dy = i * targetSize;

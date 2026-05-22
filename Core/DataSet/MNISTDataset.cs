@@ -2,16 +2,14 @@ class MNISTDataset : Dataset<MNISTSample>
 {
     public override Batch<MNISTSample> GetBatch(int numBatch)
     {
-        numBatch = Math.Min(Iterator + numBatch, Samples.Count - Iterator);
+        numBatch = Math.Min(numBatch, Samples.Count - Iterator);
 
         if(numBatch <= 0)
         {
             throw new ArgumentException("Invalid number of batch of " + numBatch);
         }
 
-        List<MNISTSample> sample_batch = Samples.Skip(Iterator).Take(numBatch).ToList();
-
-        Batch<MNISTSample> batch = new Batch<MNISTSample>(sample_batch, numBatch);
+        Batch<MNISTSample> batch = new Batch<MNISTSample>(Samples, Iterator, numBatch);
 
         Iterator += numBatch;
 
@@ -26,7 +24,7 @@ class MNISTDataset : Dataset<MNISTSample>
         int[] digit = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
         int numSample = dataset.Samples.Count;
 
-        var samples = new Batch<MNISTSample>(dataset.Samples, numSample);
+        var samples = new Batch<MNISTSample>(dataset.Samples, 0, numSample);
 
         Tensor yPred = sequential.Forward(samples.X);
         
@@ -58,7 +56,7 @@ class MNISTDataset : Dataset<MNISTSample>
         Sequential sequential = network.Sequential;
 
         int numSample = dataset.Samples.Count;
-        var samples = new Batch<MNISTSample>(dataset.Samples, numSample);
+        var samples = new Batch<MNISTSample>(dataset.Samples, 0, numSample);
 
         Tensor yPred = sequential.Forward(samples.X);
 

@@ -3,8 +3,8 @@ using Gestalt.JsonCore;
 class ML {
     static void Main()
     {
-        int trainSample = 10;
-        int testSample = 100;
+        int trainSample = 5000;
+        int testSample = 1000;
 
         ModelCheckpoint modelCheckpoint = ModelCheckpoint.Load("cnn-prototype");
 
@@ -15,12 +15,12 @@ class ML {
         MNISTDataset train = MNISTLoader.Load("train", trainSample);
         MNISTDataset test = MNISTLoader.Load("t10k", testSample);
 
-        var trainBatch = new Batch<MNISTSample>(train.Samples, trainSample);
-        var testBatch = new Batch<MNISTSample>(test.Samples, testSample);
+        var trainBatch = new Batch<MNISTSample>(train.Samples, 0, trainSample);
+        var testBatch = new Batch<MNISTSample>(test.Samples, 0, testSample);
 
         modelCheckpoint.PrintStats();
 
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < 1000; i++)
         {
             int currentEpoch = modelCheckpoint.CurrentEpoch;
 
@@ -53,13 +53,5 @@ class ML {
 
             modelCheckpoint.Track();
         }
-
-        // TrainingMonitor.CheckNumericalGrad(network, trainBatch.X, trainBatch.Y, 0);
-
-
-        // for(int i = sequential.Layers.Count - 1; i >= 0; i--)
-        // {
-        //     TrainingMonitor.CheckNumericalGrad(network, testBatch.X, testBatch.Y, i);
-        // }
     }
 }
