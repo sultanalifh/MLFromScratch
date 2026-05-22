@@ -6,7 +6,7 @@ class ML {
         int trainSample = 10;
         int testSample = 100;
 
-        ModelCheckpoint modelCheckpoint = ModelCheckpoint.Load("conv");
+        ModelCheckpoint modelCheckpoint = ModelCheckpoint.Load("cnn-prototype");
 
         NeuralNetwork network = modelCheckpoint.NeuralNetwork;
         Sequential sequential = network.Sequential;
@@ -20,7 +20,7 @@ class ML {
 
         modelCheckpoint.PrintStats();
 
-        for(int i = 0; i < 1; i++)
+        for(int i = 0; i < 10; i++)
         {
             int currentEpoch = modelCheckpoint.CurrentEpoch;
 
@@ -49,12 +49,12 @@ class ML {
 
             TrainingMonitor.LogEpoch(currentEpoch, trainLoss, testLoss, trainAcc * 100, testAcc * 100, network);
 
-            // modelCheckpoint.Track(testLoss);
+            modelCheckpoint.Track(testLoss);
 
-            // modelCheckpoint.Track();
+            modelCheckpoint.Track();
         }
 
-        TrainingMonitor.CheckNumericalGrad(network, trainBatch.X, trainBatch.Y, 0);
+        // TrainingMonitor.CheckNumericalGrad(network, trainBatch.X, trainBatch.Y, 0);
 
 
         // for(int i = sequential.Layers.Count - 1; i >= 0; i--)

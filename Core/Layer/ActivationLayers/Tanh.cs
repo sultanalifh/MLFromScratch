@@ -1,6 +1,6 @@
 class Tanh : ActivationLayer
 {
-    public Tanh(int inputSize, int outputSize) : base(inputSize, outputSize)
+    public Tanh() : base(0, 0)
     {
     }
 
@@ -8,20 +8,18 @@ class Tanh : ActivationLayer
     {
         CachedInput = x.Clone();
 
-        int batchSize = x.Shape[0];
+        int dataSize = x.Data.Length;
 
-        Tensor output = new Tensor(batchSize, InputSize);
+        Tensor output = x.Clone();
 
-        for(int i = 0; i < batchSize; i++)
+        for(int i = 0; i < dataSize; i++)
         {
-            for(int j = 0; j < InputSize; j++)
-            {
-                double pz = Math.Exp(x[i,j]);
-                double nz = Math.Exp(-x[i,j]);
-                
-                output[i,j] = (pz - nz) / (pz + nz);
-            }
+            double pz = Math.Exp(x.Data[i]);
+            double nz = Math.Exp(-x.Data[i]);
+
+            output.Data[i] = (pz - nz) / (pz + nz);
         }
+        
 
         CachedOutput = output.Clone();
 
@@ -30,16 +28,13 @@ class Tanh : ActivationLayer
 
     public override Tensor Derivative(Tensor x)
     {
-        int batchSize = x.Shape[0];
+        int dataSize = x.Data.Length;
 
-        Tensor gradInput = new Tensor(batchSize, InputSize);
+        Tensor gradInput = x.Clone();
 
-        for(int i = 0; i < batchSize; i++)
+        for(int i = 0; i < dataSize; i++)
         {
-            for(int j = 0; j < InputSize; j++)
-            {
-                gradInput[i,j] = 1 - CachedOutput[i,j] * CachedOutput[i,j];
-            }
+            gradInput.Data[i] = 1 - CachedOutput.Data[i] * CachedOutput.Data[i];
         }
 
         return gradInput;

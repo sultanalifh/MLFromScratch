@@ -5,7 +5,9 @@ using System.Text.Json.Serialization;
 class Conv2D : Layer
 {
     [JsonInclude]
-    public Parameter Filter;
+    public Parameter Filters;
+    [JsonInclude]
+    public Parameter Bias;
     [JsonInclude]
     public int FilterWidth;
     [JsonInclude]
@@ -17,7 +19,9 @@ class Conv2D : Layer
 
     public Conv2D(int inputSize, int outputSize, int filterWidth, int filterHeight, int stride = 1, int padding = 0) : base(inputSize, outputSize)
     {
-        Filter = new Parameter("Filter", outputSize, inputSize, filterHeight, filterWidth);
+        Filters = new Parameter("Filter", outputSize, inputSize, filterHeight, filterWidth);
+
+        Bias = new Parameter("Bias", outputSize);
 
         FilterWidth = filterWidth;
         FilterHeight = filterHeight;
@@ -27,6 +31,8 @@ class Conv2D : Layer
     }
     public override Tensor Forward(Tensor x)
     {
+        x = x.Pad(Padding);
+
         CachedInput = x.Clone();
 
         int[] shape = x.Shape;
@@ -57,9 +63,10 @@ class Conv2D : Layer
                                     int x_pos = m * Stride + o;
                                     int y_pos = l * Stride + n;
 
-                                    output[i,j,l,m] += x[i,k,y_pos,x_pos] * Filter.Data[j,k,n,o];
+                                    output[i,j,l,m] += x[i,k,y_pos,x_pos] * Filters.Data[j,k,n,o];
                                 }
                             }
+                            output[i,j,l,m] += Bias.Data[j];
                         }
                     }
                 }
@@ -102,20 +109,23 @@ class Conv2D : Layer
                                     int x_pos = m * Stride + o;
                                     int y_pos = l * Stride + n;
 
-                                    gradInput[i,k,y_pos,x_pos] += x[i,j,l,m] * Filter.Data[j,k,n,o];
-                                    Filter.Grad[j,k,n,o] += x[i,j,l,m] * CachedInput[i,k,y_pos,x_pos];
+                                    gradInput[i,k,y_pos,x_pos] += x[i,j,l,m] * Filters.Data[j,k,n,o];
+                                    Filters.Grad[j,k,n,o] += x[i,j,l,m] * CachedInput[i,k,y_pos,x_pos];
                                 }
                             }
+                            Bias.Grad[j] += x[i,j,l,m];
                         }
                     }
                 }
             }
         }
 
+        gradInput = gradInput.Pad(-Padding);
+
         return gradInput;
     }
     public override IEnumerable<Parameter> Parameters()
     {
-        yield return Filter;
+        yield return Filters;
     }
 }

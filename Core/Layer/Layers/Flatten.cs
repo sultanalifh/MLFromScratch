@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 class Flatten : Layer
 {
-    public Flatten(int inputSize, int outputSize) : base(inputSize, outputSize)
+    public Flatten() : base(0, 0)
     {
     }
 

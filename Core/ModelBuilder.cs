@@ -180,6 +180,47 @@ class ModelBuilder
 
                 break;
 
+            case "Conv2D":
+                Dictionary<string, object> raw_filters = (Dictionary<string, object>) obj["Filters"];
+
+                Parameter filters = GetParameter(raw_filters);
+
+                int filterHeight = Convert.ToInt32(obj["FilterHeight"]);
+                int filterWidth = Convert.ToInt32(obj["FilterWidth"]);
+
+                int conv2d_stride = Convert.ToInt32(obj["Stride"]);
+                int conv2d_padding = Convert.ToInt32(obj["Padding"]);
+
+                Conv2D conv2D = new Conv2D(inputSize, outputSize, filterWidth, filterHeight, conv2d_stride, conv2d_padding)
+                {
+                    Filters = filters
+                };
+
+                layer = conv2D;
+
+                break;
+
+            case "MaxPool":
+                int poolHeight = Convert.ToInt32(obj["PoolHeight"]);
+                int poolWidth = Convert.ToInt32(obj["PoolWidth"]);
+
+                int pool_stride = Convert.ToInt32(obj["Stride"]);
+                int pool_padding = Convert.ToInt32(obj["Padding"]);
+
+                MaxPool maxPool = new MaxPool(inputSize, outputSize, poolHeight, poolWidth, pool_stride, pool_padding);
+
+                layer = maxPool;
+
+                break;
+
+            case "Flatten":
+
+                Flatten flatten = new Flatten();
+
+                layer = flatten;
+
+                break;
+
             case "LayerNorm":
                 LayerNorm layerNorm = new LayerNorm(inputSize, outputSize);
 
@@ -206,28 +247,28 @@ class ModelBuilder
                 break;
 
             case "ReLU":
-                ReLU reLU = new ReLU(inputSize, outputSize);
+                ReLU reLU = new ReLU();
 
                 layer = reLU;
 
                 break;
 
             case "LeakyReLU":
-                LeakyReLU leakyReLU = new LeakyReLU(inputSize, outputSize);
+                LeakyReLU leakyReLU = new LeakyReLU();
 
                 layer = leakyReLU;
 
                 break;
 
             case "Sigmoid":
-                Sigmoid sigmoid = new Sigmoid(inputSize, outputSize);
+                Sigmoid sigmoid = new Sigmoid();
 
                 layer = sigmoid;
 
                 break;
 
             case "Tanh":
-                Tanh tanh = new Tanh(inputSize, outputSize);
+                Tanh tanh = new Tanh();
 
                 layer = tanh;
 
@@ -347,7 +388,7 @@ class ModelBuilder
     public ModelBuilder Conv2D(int inputSize, int outputSize, int filterHeight, int filterWidth, int stride, int padding, InitType init)
     {
         Conv2D conv2D = new Conv2D(inputSize, outputSize, filterHeight, filterWidth, stride, padding);
-        Parameter filter = conv2D.Filter;
+        Parameter filter = conv2D.Filters;
 
         Initialize(init, filter, inputSize * filterHeight * filterWidth);
 
@@ -365,9 +406,9 @@ class ModelBuilder
         return this;
     }
 
-    public ModelBuilder Flatten(int size)
+    public ModelBuilder Flatten()
     {
-        Flatten flatten = new Flatten(size, size);
+        Flatten flatten = new Flatten();
 
         Layers.Add(flatten);
 
@@ -392,36 +433,36 @@ class ModelBuilder
         return this;
     }
 
-    public ModelBuilder ReLU(int size)
+    public ModelBuilder ReLU()
     {
-        ReLU reLU = new ReLU(size, size);
+        ReLU reLU = new ReLU();
 
         Layers.Add(reLU);
 
         return this;
     }
 
-    public ModelBuilder LeakyReLU(int size)
+    public ModelBuilder LeakyReLU()
     {
-        LeakyReLU leakyReLU = new LeakyReLU(size, size);
+        LeakyReLU leakyReLU = new LeakyReLU();
 
         Layers.Add(leakyReLU);
 
         return this;
     }
 
-    public ModelBuilder Tanh(int size)
+    public ModelBuilder Tanh()
     {
-        Tanh tanh = new Tanh(size, size);
+        Tanh tanh = new Tanh();
 
         Layers.Add(tanh);
 
         return this;
     }
 
-    public ModelBuilder Sigmoid(int size)
+    public ModelBuilder Sigmoid()
     {
-        Sigmoid sigmoid = new Sigmoid(size, size);
+        Sigmoid sigmoid = new Sigmoid();
 
         Layers.Add(sigmoid);
 
@@ -451,7 +492,6 @@ class ModelBuilder
     private void Initialize(InitType init, Parameter param, int n_in)
     {
         double[] data = param.Data.Data;
-        int[] shape = param.Data.Shape;
 
         double std = init switch
         {

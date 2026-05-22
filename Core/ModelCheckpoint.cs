@@ -104,26 +104,21 @@ class ModelCheckpoint
     public static NeuralNetwork Create()
     {
         NeuralNetwork baseNetwork = ModelBuilder.Create()
-            
-            // .Dense(784, 128, InitType.He)
-            // .LayerNorm(128)
-            // .LeakyReLU(128)
 
-            // .Dense(128, 128, InitType.He)
-            // .LayerNorm(128)
-            // .LeakyReLU(128)
-            .Conv2D(1, 1, 2, 2, 1, 0, InitType.He)
-            .MaxPool(1, 2, 2, 1, 0)
-            .Flatten(0)
+        .Conv2D(1,8,3,3,1,1,InitType.He)
+        .LeakyReLU()
 
-            .Dense(676, 128, InitType.He)
-            .LayerNorm(128)
-            .LeakyReLU(128)
+        .MaxPool(8,2,2,2,0)
 
-            .Dense(128, 10, InitType.Xavier)
-            .Softmax(10)
-            .Build();
+        .Flatten()
 
+        .Dense(1568,128,InitType.He)
+        .LeakyReLU()
+
+        .Dense(128,10,InitType.Xavier)
+        .Softmax(10)
+
+        .Build();
 
         Optimizer optimizer = baseNetwork.AdamOptimizer(0.001);
         Sequential sequential = baseNetwork.Sequential;

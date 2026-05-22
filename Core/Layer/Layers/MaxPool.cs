@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-class MaxPool : ActivationLayer
+class MaxPool : Layer
 {
     [JsonInclude]
     public int PoolHeight;
@@ -19,8 +19,10 @@ class MaxPool : ActivationLayer
         Padding = padding;
     }
 
-    public override Tensor Activate(Tensor x)
+    public override Tensor Forward(Tensor x)
     {
+        x = x.Pad(Padding);
+
         CachedInput = x.Clone();
 
         int[] shape = x.Shape;
@@ -64,7 +66,7 @@ class MaxPool : ActivationLayer
         return output;
     }
 
-    public override Tensor Derivative(Tensor x)
+    public override Tensor Backward(Tensor x)
     {
         int[] inputShape = CachedInput.Shape;
         int[] shape = CachedOutput.Shape;
@@ -109,6 +111,13 @@ class MaxPool : ActivationLayer
             }
         }
 
+        gradInput = gradInput.Pad(-Padding);
+
         return gradInput;
+    }
+
+    public override IEnumerable<Parameter> Parameters()
+    {
+        yield break;
     }
 }

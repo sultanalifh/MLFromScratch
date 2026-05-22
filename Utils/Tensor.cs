@@ -61,6 +61,21 @@ class Tensor
 
         return flattenIndex;
     }
+
+    public int[] GetIndices(int flatIndex)
+    {
+        int shapeLength = Shape.Length;
+        int[] indices = new int[shapeLength];
+
+        for(int i = shapeLength - 1; i >= 0; i--)
+        {
+            indices[i] = flatIndex % Shape[i];
+            
+            flatIndex /= Shape[i];
+        }
+
+        return indices;
+    }
     public Tensor Reshape(params int[] newShape)
     {
         int flattenSize = GetFlatSize(Shape);
@@ -163,6 +178,50 @@ class Tensor
         for(int i = 0; i < flattenSize; i++)
         {
             tensor.Data[i] = func.Invoke(tensor.Data[i]);
+        }
+
+        return tensor;
+    }
+
+    public Tensor Pad(int padding)
+    {
+        if(padding == 0)
+        {
+            return this;
+        }
+
+        int shapeLength = Shape.Length;
+
+        if(shapeLength < 2)
+        {
+            throw new ArgumentException("Could'nt pad Tensor with lesser dimension than 2");
+        }
+
+        int[] newShape = new int[shapeLength];
+
+        Array.Copy(Shape, newShape, shapeLength);
+
+        newShape[shapeLength - 1] += padding * 2;
+        newShape[shapeLength - 2] += padding * 2;
+
+        Tensor tensor = new Tensor(newShape);
+        
+        int dataSize = tensor.Data.Length;
+
+        for(int i = 0; i < dataSize; i++)
+        {
+            int[] indices = tensor.GetIndices(i);
+
+            int dx = indices[shapeLength - 1] - padding;
+            int dy = indices[shapeLength - 2] - padding;
+
+            if(dx >= 0 && dx < Shape[shapeLength - 1] && dy >= 0 && dy < Shape[shapeLength - 2])
+            {
+                indices[shapeLength - 1] = dx;
+                indices[shapeLength - 2] = dy;
+
+                tensor.Data[i] = this[indices];
+            }
         }
 
         return tensor;
