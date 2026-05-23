@@ -29,13 +29,13 @@ class Batch<TSample> where TSample : Sample
         int inputSize = samples[0].Input.Data.Length;
         int targetSize = samples[0].Target.Data.Length;
 
-        for(int i = start; i < start + size; i++)
+        for(int i = 0; i < size; i++)
         {
             int dx = i * inputSize;
             int dy = i * targetSize;
 
-            Tensor input = samples[i].Input;
-            Tensor target = samples[i].Target;
+            Tensor input = samples[start + i].Input;
+            Tensor target = samples[start + i].Target;
 
             for(int j = 0; j < inputSize; j++)
             {

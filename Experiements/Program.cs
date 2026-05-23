@@ -1,16 +1,21 @@
 ﻿using System;
+using System.Diagnostics;
 using Gestalt.JsonCore;
 class ML {
     static void Main()
     {
+        Stopwatch stopwatch = new Stopwatch();
+
         int trainSample = 5000;
         int testSample = 1000;
 
-        ModelCheckpoint modelCheckpoint = ModelCheckpoint.Load("cnn-prototype");
+        ModelCheckpoint modelCheckpoint = ModelCheckpoint.Load("cnn-prototype-2");
 
         NeuralNetwork network = modelCheckpoint.NeuralNetwork;
         Sequential sequential = network.Sequential;
         Optimizer optimizer = network.Optimizer;
+
+        network.Lambda = 0.0005;
 
         MNISTDataset train = MNISTLoader.Load("train", trainSample);
         MNISTDataset test = MNISTLoader.Load("t10k", testSample);
@@ -22,6 +27,8 @@ class ML {
 
         for(int i = 0; i < 1000; i++)
         {
+            stopwatch.Start();
+
             int currentEpoch = modelCheckpoint.CurrentEpoch;
 
             train.Shuffle();
@@ -47,7 +54,7 @@ class ML {
             sequential.Backward(trainGrad);
 
 
-            TrainingMonitor.LogEpoch(currentEpoch, trainLoss, testLoss, trainAcc * 100, testAcc * 100, network);
+            TrainingMonitor.LogEpoch(currentEpoch, trainLoss, testLoss, trainAcc * 100, testAcc * 100, network, stopwatch);
 
             modelCheckpoint.Track(testLoss);
 

@@ -127,5 +127,6 @@ class Conv2D : Layer
     public override IEnumerable<Parameter> Parameters()
     {
         yield return Filters;
+        yield return Bias;
     }
 }

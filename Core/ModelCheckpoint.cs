@@ -54,7 +54,7 @@ class ModelCheckpoint
         JsonCore.Serialize(this, $"{FileName}.stats");
     }
 
-    public void Save() => JsonCore.Serialize(NeuralNetwork, $"{FileName}.model");
+    public void Save() => JsonCore.Serialize(NeuralNetwork, $"{FileName}.model", true);
 
     public static ModelCheckpoint Load(string fileName)
     {
@@ -113,6 +113,7 @@ class ModelCheckpoint
         .Flatten()
 
         .Dense(1568,128,InitType.He)
+        .LayerNorm(128)
         .LeakyReLU()
 
         .Dense(128,10,InitType.Xavier)

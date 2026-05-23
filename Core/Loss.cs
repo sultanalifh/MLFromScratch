@@ -196,6 +196,32 @@ static class Loss
         return lossGrad;
     }
 
+    public static double L2Regularization(NeuralNetwork network)
+    {
+        double l2Loss = 0;
+
+        Sequential sequential = network.Sequential;
+
+        foreach(Parameter parameter in sequential.Parameters())
+        {
+            string paramName = parameter.Name;
+
+            if(paramName != "Weight")
+            {
+                continue;
+            }
+
+            double[] weights = parameter.Data.Data;
+
+            foreach(double weight in weights)
+            {
+                l2Loss += network.Lambda * weight * weight;
+            }
+        }
+
+        return l2Loss;
+    }
+
     public static double LossValue(Tensor yPred, Tensor yTrue, ModelLoss lossType) => lossType switch
     {
         ModelLoss.MSE => MeanSquarredErrorValue(yPred, yTrue),

@@ -2,12 +2,12 @@ class MNISTDataset : Dataset<MNISTSample>
 {
     public override Batch<MNISTSample> GetBatch(int numBatch)
     {
-        numBatch = Math.Min(numBatch, Samples.Count - Iterator);
-
         if(numBatch <= 0)
         {
             throw new ArgumentException("Invalid number of batch of " + numBatch);
         }
+
+        numBatch = Math.Min(numBatch, Samples.Count - Iterator);
 
         Batch<MNISTSample> batch = new Batch<MNISTSample>(Samples, Iterator, numBatch);
 

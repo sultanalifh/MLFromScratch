@@ -1,12 +1,22 @@
+using System.Diagnostics;
+
 static class TrainingMonitor
 {
-    public static void LogEpoch(int epoch, double trainLoss, double testLoss, double trainAcc, double testAcc, NeuralNetwork network)
+    public static void LogEpoch(int epoch, double trainLoss, double testLoss, double trainAcc, double testAcc, NeuralNetwork network, Stopwatch stopwatch = null)
     {
         Console.WriteLine($"--- Epoch {epoch} ---");
         Console.WriteLine($"Train Loss: {trainLoss}");
         Console.WriteLine($"Test Loss: {testLoss}");
         Console.WriteLine($"Train Accuracy: {trainAcc}%");
         Console.WriteLine($"Test Accuracy: {testAcc}%");
+        if(stopwatch != null)
+        {
+            stopwatch.Stop();
+
+            Console.WriteLine("Time Elapsed: " + stopwatch.Elapsed);
+
+            stopwatch.Reset();
+        }
         Console.WriteLine();
         Console.WriteLine("--- Layer Stats --- ");
 
