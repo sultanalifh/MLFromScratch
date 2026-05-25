@@ -15,7 +15,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
-
+*.lscache
 # Visual Studio cache/options
 .vs/
 .vscode/
