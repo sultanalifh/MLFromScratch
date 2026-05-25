@@ -15,7 +15,7 @@ class ML {
         Sequential sequential = network.Sequential;
         Optimizer optimizer = network.Optimizer;
 
-        network.Lambda = 0.0005;
+        network.Lambda = 0.0001;
 
         MNISTDataset train = MNISTLoader.Load("train", trainSample);
         MNISTDataset test = MNISTLoader.Load("t10k", testSample);
