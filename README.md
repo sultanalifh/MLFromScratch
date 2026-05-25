@@ -4,21 +4,31 @@
 
 MLFromScratch is a Machine Learning and Deep Learning project built entirely from scratch in C#.
 
-This project was created primarily as a learning journey focused on understanding how Machine Learning systems actually work internally rather than simply using existing libraries.
+This project exists as a learning journey focused on understanding how Machine Learning systems actually work internally rather than simply using existing libraries.
 
-The goal of this project is not only to train models, but also to deeply understand the mathematics, architecture, training dynamics, and infrastructure behind modern Machine Learning systems.
+The goal is not only to train models, but also to understand the mathematics, training dynamics, architecture design, and engineering principles behind modern Machine Learning systems.
 
 This project emphasizes:
 
 * Learning by building
 * Strong fundamentals
-* Practical implementation
 * Understanding over abstraction
+* Practical implementation
 * Minimal dependency usage
 
 ---
 
-## Current Topics
+## Branch Architecture
+
+### master
+
+Current development and active progress branch.
+
+### MLP-Arc
+
+Focuses on Multi-Layer Perceptron architecture and foundational Deep Learning concepts.
+
+Topics explored:
 
 ✅ Linear Regression
 
@@ -61,6 +71,38 @@ This project emphasizes:
 
 ✅ Save / Load Model Support
 
+✅ Gradient Checking
+
+✅ Training Dynamics Analysis
+
+* Underfitting
+* Overfitting
+* Vanishing Gradients
+* Exploding Gradients
+* Activation Collapse
+
+---
+
+### CNN-Arc
+
+Focuses on image-based learning and convolutional architectures.
+
+Current progress:
+
+🚧 Convolution Operations
+
+🚧 Feature Maps
+
+🚧 Filters / Kernels
+
+🚧 Pooling Layers
+
+🚧 Tensor Operations
+
+🚧 MNIST
+
+🚧 CNN Architecture
+
 ---
 
 ## Philosophy
@@ -80,6 +122,7 @@ The objective is:
 ---
 
 ## Notes
+
 Made with curiosity, persistence, and countless debugging sessions.
 
 Dr. Gestalt
