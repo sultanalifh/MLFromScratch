@@ -23,20 +23,22 @@ class Dropout : Layer
             return x;
         }
 
-        int batchSize = x.Shape[0];
+        int[] inputShape = x.Shape;
+        int[] shape = new int[inputShape.Length];
+        double[] inputData = x.Data;
 
-        Mask = new Tensor(batchSize, InputSize);
-        Tensor output = new Tensor(batchSize, InputSize);
+        Array.Copy(inputShape, shape, inputShape.Length);
 
-        for(int i = 0; i < batchSize; i++)
+        Tensor output = new Tensor(shape);
+        Mask = output.Clone();
+
+        for(int i = 0; i < inputData.Length; i++)
         {
-            for(int j = 0; j < InputSize; j++)
-            {
-                Mask[i,j] = Utility.Random.NextDouble() > DropoutRate ? 1 : 0;
+            Mask.Data[i] = Utility.Random.NextDouble() > DropoutRate ? 1 : 0;
 
-                output[i,j] = x[i,j] * Mask[i,j] / (1 - DropoutRate);
-            }
+            output.Data[i] = inputData[i] * Mask.Data[i] / (1 - DropoutRate);
         }
+
 
         CachedOutput = output.Clone();
 
@@ -45,16 +47,18 @@ class Dropout : Layer
 
     public override Tensor Backward(Tensor x)
     {
-        int batchSize = x.Shape[0];
-
-        Tensor gradInput = new Tensor(batchSize, InputSize);
-
-        for(int i = 0; i < batchSize; i++)
+        if (!IsTraining)
         {
-            for(int j = 0; j < InputSize; j++)
-            {
-                gradInput[i,j] = x[i,j] * Mask[i,j] / (1 - DropoutRate);
-            }
+            return x;
+        }
+
+        double[] data = x.Data;
+
+        Tensor gradInput = x.Clone();
+
+        for(int i = 0; i < data.Length; i++)
+        {
+            gradInput.Data[i] = data[i] * Mask.Data[i] / (1 - DropoutRate);
         }
 
         return gradInput;

@@ -41,7 +41,7 @@ class ModelCheckpoint
             Console.WriteLine("New best model found!");
             Console.WriteLine("Validation loss: " + BestValidationLoss);
             Console.WriteLine("Saving checkpoint...");
-            Save();
+            Save($"{FileName}-best");
             Console.WriteLine("Checkpoint saved!");
             Console.WriteLine();
         }
@@ -51,10 +51,13 @@ class ModelCheckpoint
     {
         CurrentEpoch++;
 
-        JsonCore.Serialize(this, $"{FileName}.stats");
+        SaveStats();
+        Save(FileName);
     }
 
-    public void Save() => JsonCore.Serialize(NeuralNetwork, $"{FileName}.model", true);
+    public void SaveStats() => JsonCore.Serialize(this, $"{FileName}.stats");
+
+    public void Save(string fileName) => JsonCore.Serialize(NeuralNetwork, $"{fileName}.model", true);
 
     public static ModelCheckpoint Load(string fileName)
     {
@@ -78,9 +81,26 @@ class ModelCheckpoint
         else
         {
             Console.WriteLine("Model found!");
-            Console.WriteLine();
+            
+            string selectedModel = fileName;
+            if (File.Exists($"{fileName}-best.model"))
+            {
+                Console.WriteLine("Load from best model ? [y/n]");
+                ConsoleKeyInfo key = Console.ReadKey();
+                while(key.KeyChar != 'y' && key.KeyChar != 'n')
+                {
+                    key = Console.ReadKey();
+                }
 
-            Dictionary<string, object> raw_network = (Dictionary<string, object>) JsonCore.Parse($"{fileName}.model")["data"];
+                if(key.KeyChar == 'y')
+                {
+                    selectedModel = fileName + "-best";
+                }
+            }
+            Console.WriteLine();
+            Console.WriteLine("Loading Model...");
+
+            Dictionary<string, object> raw_network = (Dictionary<string, object>) JsonCore.Parse($"{selectedModel}.model")["data"];
             Dictionary<string, object> raw_checkpoint = (Dictionary<string, object>) JsonCore.Parse($"{fileName}.stats")["data"];
 
             network = ModelBuilder.Create().FromJson(raw_network);
@@ -88,6 +108,9 @@ class ModelCheckpoint
             bestValidationLoss = (double) raw_checkpoint["BestValidationLoss"];
             currentEpoch = Convert.ToInt32(raw_checkpoint["CurrentEpoch"]);
             bestEpoch = Convert.ToInt32(raw_checkpoint["BestEpoch"]);
+
+            Console.WriteLine("Model Loaded!");
+            Console.WriteLine();
         }
 
         return new ModelCheckpoint()
